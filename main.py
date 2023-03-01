@@ -75,6 +75,11 @@ def set_label_columns(_):
     pack_part5()
 
 
+# Function to set actual data columns
+def set_data_columns(_):
+    print("Data received")
+
+
 # PART 1 : CHOOSING FILE
 
 frame1 = tk.Frame(window)
@@ -148,7 +153,7 @@ def pack_part3():
 frame4 = tk.Frame(window)
 frame4.pack()
 
-label4a = tk.Label(frame4, text="4a. Donnez les colonnes contenant les valeurs de date et d'heure (en chiffres)", font='Helvetica 16 bold')
+label4a = tk.Label(frame4, text="4a. Donnez les numéros des colonnes contenant les valeurs de date et d'heure", font='Helvetica 16 bold')
 frame4a_1 = tk.Frame(frame4)
 label4a_1 = tk.Label(frame4a_1, text="Colonne de dates : ", font='Helvetica 10')
 entry4a_1 = tk.Entry(frame4a_1, bd=2)
@@ -156,7 +161,7 @@ frame4a_2 = tk.Frame(frame4)
 label4a_2 = tk.Label(frame4a_2, text="Colonne d'heures : ", font='Helvetica 10')
 entry4a_2 = tk.Entry(frame4a_2, bd=2)
 
-label4b = tk.Label(frame4, text="4b. Donnez la colonne contenant les valeurs de tranches de vitesse (en chiffres)", font='Helvetica 16 bold')
+label4b = tk.Label(frame4, text="4b. Donnez le numéro de la colonne contenant les valeurs de tranches de vitesse", font='Helvetica 16 bold')
 entry4b = tk.Entry(frame4, bd=2)
 
 button4 = tk.Button(frame4, text="valider")
@@ -184,14 +189,77 @@ def pack_part4():
 # PART 5 : DEFINING USED COLUMNS
 
 # TODO : UI : champs pour numéro colonne V85, V50 etc, numéro colonne nombre de véhicules etc..., bouton valider (changer ces champs si données brutes)
-
+print(type(tk.Frame(window)) == tk.Frame)
 frame5 = tk.Frame(window)
 frame5.pack()
 
-# TODO : here
+label5 = tk.Label(frame5, text="5. Donnez les numéros des colonnes suivantes (laissez vide si colonne pas présente)", font='Helvetica 16 bold')
+frame5_1 = tk.Frame(frame5)
+label5_1 = tk.Label(frame5_1, text="Vitesse : ", font='Helvetica 10')
+entry5_1 = tk.Entry(frame5_1, bd=2)
+frame5_2 = tk.Frame(frame5)
+label5_2 = tk.Label(frame5_2, text="Bruit : ", font='Helvetica 10')
+entry5_2 = tk.Entry(frame5_2, bd=2)
+
+label5a = tk.Label(frame5, text="5a. Donnez les numéros des colonnes suivantes - données agrégées par heure (laissez vide si colonne pas présente)", font='Helvetica 16 bold')
+frame5a_1 = tk.Frame(frame5)
+label5a_1 = tk.Label(frame5a_1, text="Nb de passages : ", font='Helvetica 10')
+entry5a_1 = tk.Entry(frame5a_1, bd=2)
+frame5a_2 = tk.Frame(frame5)
+label5a_2 = tk.Label(frame5a_2, text="Vmoyenne : ", font='Helvetica 10')
+entry5a_2 = tk.Entry(frame5a_2, bd=2)
+frame5a_3 = tk.Frame(frame5)
+label5a_3 = tk.Label(frame5a_3, text="Vmax : ", font='Helvetica 10')
+entry5a_3 = tk.Entry(frame5a_3, bd=2)
+frame5a_4 = tk.Frame(frame5)
+label5a_4 = tk.Label(frame5a_4, text="V85 : ", font='Helvetica 10')
+entry5a_4 = tk.Entry(frame5a_4, bd=2)
+frame5a_5 = tk.Frame(frame5)
+label5a_5 = tk.Label(frame5a_5, text="V50 : ", font='Helvetica 10')
+entry5a_5 = tk.Entry(frame5a_5, bd=2)
+frame5a_6 = tk.Frame(frame5)
+label5a_6 = tk.Label(frame5a_6, text="V30 : ", font='Helvetica 10')
+entry5a_6 = tk.Entry(frame5a_6, bd=2)
+frame5a_7 = tk.Frame(frame5)
+label5a_7 = tk.Label(frame5a_7, text="V10 : ", font='Helvetica 10')
+entry5a_7 = tk.Entry(frame5a_7, bd=2)
+
+label5b = tk.Label(frame5, text="5b. Donnez les numéros des colonnes suivantes - données agrégées par vitesse (laissez vide si colonne pas présente)", font='Helvetica 16 bold')
+frame5b_1 = tk.Frame(frame5)
+label5b_1 = tk.Label(frame5b_1, text="Nb de passages : ", font='Helvetica 10')
+entry5b_1 = tk.Entry(frame5b_1, bd=2)
+
+button5 = tk.Button(frame5, text="valider")
+button5.bind("<Button-1>", set_data_columns)
 
 def pack_part5():
     frame4.pack_forget()
+    if data_types[0]:
+        for packing in [label5, frame5_1, label5_1, entry5_1, frame5_2, label5_2, entry5_2]:
+            if type(packing) == tk.Frame or packing == label5:
+                packing.pack()
+            elif type(packing) == tk.Label:
+                packing.pack(side=tk.LEFT)
+            elif type(packing) == tk.Entry:
+                packing.pack(side=tk.RIGHT)
+    else:
+        if data_types[1]:
+            for packing in [label5a, frame5a_1, label5a_1, entry5a_1, frame5a_2, label5a_2, entry5a_2, frame5a_3, label5a_3, entry5a_3, frame5a_4, label5a_4, entry5a_4, frame5a_5, label5a_5, entry5a_5, frame5a_6, label5a_6, entry5a_6, frame5a_7, label5a_7, entry5a_7]:
+                if type(packing) == tk.Frame or packing == label5a:
+                    packing.pack()
+                elif type(packing) == tk.Label:
+                    packing.pack(side=tk.LEFT)
+                elif type(packing) == tk.Entry:
+                    packing.pack(side=tk.RIGHT)
+        if data_types[2]:
+            for packing in [label5b, frame5b_1, label5b_1, entry5b_1]:
+                if type(packing) == tk.Frame or packing == label5b:
+                    packing.pack()
+                elif type(packing) == tk.Label:
+                    packing.pack(side=tk.LEFT)
+                elif type(packing) == tk.Entry:
+                    packing.pack(side=tk.RIGHT)
+    button5.pack()
 
 
 # Tkinter execution
