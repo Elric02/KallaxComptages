@@ -188,8 +188,6 @@ def pack_part4():
 
 # PART 5 : DEFINING USED COLUMNS
 
-# TODO : UI : champs pour numéro colonne V85, V50 etc, numéro colonne nombre de véhicules etc..., bouton valider (changer ces champs si données brutes)
-print(type(tk.Frame(window)) == tk.Frame)
 frame5 = tk.Frame(window)
 frame5.pack()
 
