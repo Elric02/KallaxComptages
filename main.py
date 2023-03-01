@@ -1,5 +1,11 @@
+# TODO : renommer ce fichier en input.py ? et faire un autre fichier central main.py qui lance les différentes procédures
+# TODO : ajouter champs pour préciser les lignes intéressantes des fichiers ? ou le faire automatiquement (et demander éventuellement une confirmaton de l'user)
+# TODO : suite du travail : enregistrer le tout dans une base de données (probablement nouveau fichier .py pour faire ça)
+
+
 import tkinter as tk
-from tkinter import filedialog as fd
+from tkinter import filedialog as tk_fd
+import tkintermapview as tkmv
 
 window = tk.Tk()
 
@@ -13,13 +19,14 @@ data_types = [False, False, False] # raw, speed-aggregated, time-aggregated
 date_hour_columns = [0, 0]
 speed_column = 0
 data_columns = [[], [], []]
+location = [0, 0]
 
 
 # FUNCTIONS DEFINING DATA SPECIFICATIONS
 
 # Function to open file and set file type
 def choose_file(_):
-    loc = fd.askopenfilename(filetypes=(("fichier XLSX ou CSV", ["*.xlsx", "*.csv"]),))
+    loc = tk_fd.askopenfilename(filetypes=(("fichier XLSX ou CSV", ["*.xlsx", "*.csv"]),))
     global filetype
     filetype = loc[loc.rindex('.'):]
     print("Importing", filetype, "located at", loc)
@@ -71,7 +78,7 @@ def set_label_columns(_):
         print("Date and hour columns set to :", *date_hour_columns)
     if data_types[2]:
         speed_column = entry4b.get()
-        print("Speed column set to :", speed_column)
+        print("Speed column set to:", speed_column)
     print("Proceeding to part 5")
     pack_part5()
 
@@ -88,6 +95,20 @@ def set_data_columns(_):
             data_columns[2] = [entry5b_1.get()]
     print("Data received, proceeding to part 6")
     pack_part6()
+
+
+# Function to set geolocation coordinates
+def set_location(coords):
+    global location
+    location = coords
+    print("Location set to :", location)
+
+
+# Function to end the input process
+def end_input(_):
+    frame6.pack_forget()
+    print("All necessary information gathered !")
+    # TODO : lancer la suite depuis ici
 
 
 # PART 1 : CHOOSING FILE
@@ -275,8 +296,25 @@ def pack_part5():
 frame6 = tk.Frame(window)
 frame6.pack()
 
+def set_marker(coords):
+    map6.delete_all_marker()
+    map6.set_marker(coords[0], coords[1], text="Localisation du comptage")
+    set_location(coords)
+
+label6 = tk.Label(frame6, text="6. Cliquez sur la localisation exacte du comptage", font='Helvetica 16 bold')
+map6 = tkmv.TkinterMapView(frame6, width=800, height=600)
+map6.set_position(46.521934, 6.626156)  # Lausanne, Switzerland
+map6.set_zoom(8)
+map6.add_left_click_map_command(set_marker)
+
+button6 = tk.Button(frame6, text="valider")
+button6.bind("<Button-1>", end_input)
+
 def pack_part6():
     frame5.pack_forget()
+    label6.pack()
+    map6.pack()
+    button6.pack()
 
 
 # Tkinter execution
