@@ -12,6 +12,7 @@ working_element = ''
 data_types = [False, False, False] # raw, speed-aggregated, time-aggregated
 date_hour_columns = [0, 0]
 speed_column = 0
+data_columns = [[], [], []]
 
 
 # FUNCTIONS DEFINING DATA SPECIFICATIONS
@@ -77,7 +78,16 @@ def set_label_columns(_):
 
 # Function to set actual data columns
 def set_data_columns(_):
-    print("Data received")
+    global data_columns
+    if data_types[0]:
+        data_columns[0] = [entry5_1.get(), entry5_2.get()]
+    else:
+        if data_types[1]:
+            data_columns[1] = [entry5a_1.get(), entry5a_2.get(), entry5a_3.get(), entry5a_4.get(), entry5a_5.get(), entry5a_6.get(), entry5a_7.get()]
+        if data_types[2]:
+            data_columns[2] = [entry5b_1.get()]
+    print("Data received, proceeding to part 6")
+    pack_part6()
 
 
 # PART 1 : CHOOSING FILE
@@ -258,6 +268,15 @@ def pack_part5():
                 elif type(packing) == tk.Entry:
                     packing.pack(side=tk.RIGHT)
     button5.pack()
+
+
+# PART 6 : DEFINING LOCATION
+
+frame6 = tk.Frame(window)
+frame6.pack()
+
+def pack_part6():
+    frame5.pack_forget()
 
 
 # Tkinter execution
