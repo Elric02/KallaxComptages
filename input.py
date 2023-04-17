@@ -5,6 +5,8 @@
 import tkinter as tk
 from tkinter import filedialog as tk_fd
 import tkintermapview as tkmv
+import pandas as pd
+import openpyxl
 
 
 # DATA SPECIFICATION
@@ -13,6 +15,7 @@ window = None
 root = None
 file = None
 filetype = ''
+xlsx_sheets = []
 working_element = ''
 data_types = [False, False, False] # raw, speed-aggregated, time-aggregated
 date_hour_columns = [0, 0]
@@ -63,20 +66,22 @@ def choose_file(frame1):
     global filetype
     filetype = loc[loc.rindex('.'):]
     print("Importing", filetype, "located at", loc)
-    pack_part2(frame1)
     global file
-    file = open(loc, 'r')
-    file.close()
+    file = pd.ExcelFile(loc)
+    global xlsx_sheets
+    xlsx_sheets = file.sheet_names
+    print(file)
+    pack_part2(frame1)
 
 
 # Function to set working element (separator or working sheet)
-def set_working_element(frame2, entry2a, entry2b):
+def set_working_element(frame2, entry2a_var, entry2b):
     global working_element
     if filetype == ".xlsx":
-        if entry2a.get() == "":
+        if entry2a_var.get() == "" or entry2a_var.get() == "Cliquez ici":
             return
         else:
-            working_element = entry2a.get()
+            working_element = entry2a_var.get()
     else:
         if entry2b.get() == "":
             return
@@ -160,13 +165,16 @@ def pack_part2(frame1):
 
     label2a = tk.Label(frame2, text="2. Définissez la feuille à utiliser (par exemple feuille1)",
                        font='Helvetica 16 bold')
-    entry2a = tk.Entry(frame2, bd=5)
+    entry2a_var = tk.StringVar()
+    entry2a_var.set("Cliquez ici")
+    print(xlsx_sheets)
+    entry2a = tk.OptionMenu(frame2, entry2a_var, *xlsx_sheets)
 
     label2b = tk.Label(frame2, text="2. Définissez le séparateur de colonnes (par exemple ;)",
                        font='Helvetica 16 bold')
     entry2b = tk.Entry(frame2, bd=5)
 
-    button2 = tk.Button(frame2, text="valider", command= lambda: set_working_element(frame2, entry2a, entry2b))
+    button2 = tk.Button(frame2, text="valider", command= lambda: set_working_element(frame2, entry2a_var, entry2b))
 
     if filetype == ".xlsx":
         label2a.pack()
