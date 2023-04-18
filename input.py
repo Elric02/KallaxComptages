@@ -1,6 +1,3 @@
-# TODO : suite du travail : enregistrer le tout dans une base de données (probablement nouveau fichier .py pour faire ça)
-
-
 import tkinter as tk
 from tkinter import filedialog as tk_fd
 import tkintermapview as tkmv
@@ -46,12 +43,14 @@ def begin(newWindow, rootDef):
 
 # Function to end the input process
 
-def end_input(frame6):
-    frame6.pack_forget()
+def end_input(frame7):
+    frame7.pack_forget()
     print("All necessary information gathered !")
     datadict = {
         "working_element": working_element,
+        "df": df,
         "data_types": data_types,
+        "working_rows": working_rows,
         "date_hour_columns": date_hour_columns,
         "speed_column": speed_column,
         "data_columns": data_columns,
@@ -73,7 +72,6 @@ def choose_file(frame1):
     global file, xlsx_sheets
     file = pd.ExcelFile(loc)
     xlsx_sheets = file.sheet_names
-    print(file)
     pack_part2(frame1)
 
 
@@ -93,8 +91,6 @@ def set_working_element(frame2, entry2a_var, entry2b):
     print("Working element set as", working_element)
     global file, df
     df = file.parse(sheet_name=working_element, header=None)
-    print(df)
-    print(df.shape[0])
     pack_part3(frame2)
 
 

@@ -1,4 +1,6 @@
 import tkinter as tk
+import pandas as pd
+
 
 # INPUT
 
@@ -11,8 +13,22 @@ def launch_input():
 
 def receive_input(datadict, input_window, root):
     root.deiconify()
-    print(datadict)
     input_window.destroy()
+    send_data(datadict, root)
+
+
+# DATABASE
+
+def send_data(datadict, root):
+    root.withdraw()
+    database_window = tk.Toplevel(root)
+    database_window.title("KallaxComptages - database")
+    db_frame = tk.Frame(database_window)
+    db_frame.pack()
+    db_label = tk.Label(db_frame, text="Envoi des données dans la base de données...", font='Helvetica 16 bold')
+    db_label.pack()
+    import database
+    database.main(datadict)
 
 
 # MAIN
