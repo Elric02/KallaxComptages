@@ -9,6 +9,7 @@ import openpyxl
 
 window = None
 root = None
+loc = ""
 file = None
 filetype = ''
 xlsx_sheets = []
@@ -46,6 +47,8 @@ def begin(newWindow, rootDef):
 def end_input(frame7):
     frame7.pack_forget()
     print("All necessary information gathered !")
+    filename = loc.split("/")[-1]
+    print(filename)
     datadict = {
         "working_element": working_element,
         "df": df,
@@ -54,7 +57,8 @@ def end_input(frame7):
         "date_hour_columns": date_hour_columns,
         "speed_column": speed_column,
         "data_columns": data_columns,
-        "location": location
+        "location": location,
+        "filename": filename
     }
     import main
     global root
@@ -65,6 +69,7 @@ def end_input(frame7):
 
 # Function to open file and set file type
 def choose_file(frame1):
+    global loc
     loc = tk_fd.askopenfilename(filetypes=(("fichier XLSX ou CSV", ["*.xlsx", "*.csv"]),))
     global filetype
     filetype = loc[loc.rindex('.'):]
@@ -246,7 +251,7 @@ def pack_part4(frame3):
     frame4a_1 = tk.Frame(frame4)
     label4a_1 = tk.Label(frame4a_1, text="Début (incluse) : ", font='Helvetica 10')
     entry4a_1 = tk.Entry(frame4a_1, bd=3)
-    entry4a_1.insert(0, "0")
+    entry4a_1.insert(0, "1")
     frame4a_2 = tk.Frame(frame4)
     label4a_2 = tk.Label(frame4a_2, text="Fin (incluse) : ", font='Helvetica 10')
     entry4a_2 = tk.Entry(frame4a_2, bd=3)
@@ -257,7 +262,7 @@ def pack_part4(frame3):
     frame4b_1 = tk.Frame(frame4)
     label4b_1 = tk.Label(frame4b_1, text="Début (incluse) : ", font='Helvetica 10')
     entry4b_1 = tk.Entry(frame4b_1, bd=3)
-    entry4b_1.insert(0, "0")
+    entry4b_1.insert(0, "1")
     frame4b_2 = tk.Frame(frame4)
     label4b_2 = tk.Label(frame4b_2, text="Fin (incluse) : ", font='Helvetica 10')
     entry4b_2 = tk.Entry(frame4b_2, bd=3)
@@ -268,7 +273,7 @@ def pack_part4(frame3):
     frame4c_1 = tk.Frame(frame4)
     label4c_1 = tk.Label(frame4c_1, text="Début (incluse) : ", font='Helvetica 10')
     entry4c_1 = tk.Entry(frame4c_1, bd=3)
-    entry4c_1.insert(0, "0")
+    entry4c_1.insert(0, "1")
     frame4c_2 = tk.Frame(frame4)
     label4c_2 = tk.Label(frame4c_2, text="Fin (incluse) : ", font='Helvetica 10')
     entry4c_2 = tk.Entry(frame4c_2, bd=3)
