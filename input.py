@@ -144,10 +144,10 @@ def set_label_columns(frame5, entry5a_1_var, entry5a_2_var, entry5b):
 
 
 # Function to set actual data columns
-def set_data_columns(frame6, entry6_1_var, entry6_2_var, entry6_3_var, entry6_4_var, entry6a_1_var, entry6a_2_var, entry6a_3_var, entry6a_4_var, entry6a_5_var, entry6a_6_var, entry6b_1_var, entry6a_7_var):
+def set_data_columns(frame6, entry6_1_var, entry6_2_var, entry6_3_var, entry6_4_var, entry6_5_var, entry6a_1_var, entry6a_2_var, entry6a_3_var, entry6a_4_var, entry6a_5_var, entry6a_6_var, entry6b_1_var, entry6a_7_var):
     global data_columns
     if data_types[0]:
-        data_columns[0] = [entry6_1_var.get(), entry6_2_var.get(), entry6_3_var.get(), entry6_4_var.get()]
+        data_columns[0] = [entry6_1_var.get(), entry6_2_var.get(), entry6_3_var.get(), entry6_4_var.get(), entry6_5_var.get()]
     else:
         if data_types[1]:
             data_columns[1] = [entry6a_1_var.get(), entry6a_2_var.get(), entry6a_3_var.get(), entry6a_4_var.get(), entry6a_5_var.get(), entry6a_6_var.get(), entry6a_7_var.get()]
@@ -393,6 +393,11 @@ def pack_part6(frame5):
     entry6_4_var = tk.StringVar()
     entry6_4_var.set("Pas de valeur")
     entry6_4 = tk.OptionMenu(frame6_4, entry6_4_var, *columns)
+    frame6_5 = tk.Frame(frame6)
+    label6_5 = tk.Label(frame6_5, text="Type de véhicule : ", font='Helvetica 10')
+    entry6_5_var = tk.StringVar()
+    entry6_5_var.set("Pas de valeur")
+    entry6_5 = tk.OptionMenu(frame6_5, entry6_5_var, *columns)
 
     label6a = tk.Label(frame6,
                        text="6a. Donnez les colonnes suivantes - données agrégées par heure (laissez vide si colonne pas présente)",
@@ -443,15 +448,15 @@ def pack_part6(frame5):
     entry6b_1 = tk.OptionMenu(frame6b_1, entry6b_1_var, *columns)
 
     button6 = tk.Button(frame6, text="valider", command= lambda: set_data_columns(frame6, entry6_1_var, entry6_2_var,
-                                                                                  entry6_3_var, entry6_4_var, entry6a_1_var,
-                                                                                  entry6a_2_var, entry6a_3_var, entry6a_4_var,
-                                                                                  entry6a_5_var, entry6a_6_var, entry6a_7_var,
-                                                                                  entry6b_1_var))
+                                                                                  entry6_3_var, entry6_4_var, entry6_5_var,
+                                                                                  entry6a_1_var, entry6a_2_var, entry6a_3_var,
+                                                                                  entry6a_4_var, entry6a_5_var, entry6a_6_var,
+                                                                                  entry6a_7_var, entry6b_1_var))
 
     frame5.pack_forget()
     if data_types[0]:
         for packing in [label6, frame6_1, label6_1, entry6_1, frame6_2, label6_2, entry6_2,
-                        frame6_3, label6_3, entry6_3, frame6_4, label6_4, entry6_4]:
+                        frame6_3, label6_3, entry6_3, frame6_4, label6_4, entry6_4, frame6_5, label6_5, entry6_5]:
             if type(packing) == tk.Frame or packing == label6:
                 packing.pack()
             elif type(packing) == tk.Label:

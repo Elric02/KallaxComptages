@@ -28,20 +28,23 @@ def main(datadict):
 
     # Entry
 
-    cur.execute("SELECT max(entryID) FROM Entry")
     cols = []
     if datadict["data_types"][0]:
         cols += [openpyxl.utils.column_index_from_string(datadict["data_columns"][0][0]) - 1]
-        if len(datadict["data_columns"][0][1]) <= 3:
-            cols += [openpyxl.utils.column_index_from_string(datadict["data_columns"][0][1]) - 1]
-        if len(datadict["data_columns"][0][2]) <= 3:
-            cols += [openpyxl.utils.column_index_from_string(datadict["data_columns"][0][2]) - 1]
-        if len(datadict["data_columns"][0][3]) <= 3:
-            cols += [openpyxl.utils.column_index_from_string(datadict["data_columns"][0][3]) - 1]
+        for i in range(1, len(datadict["data_columns"][0])):
+            if len(datadict["data_columns"][0][i]) <= 3:
+                cols += [openpyxl.utils.column_index_from_string(datadict["data_columns"][0][i]) - 1]
         print(cols)
         entries = datadict["df"].iloc[int(datadict["working_rows"][0][0])-1:int(datadict["working_rows"][0][1]), cols]
         print(entries)
-    # TODO data_types[1] and data_types[2]
+    # TODO data_types[1] and data_types
+
+    cur.execute("SELECT max(entryID) FROM Entry")
+    maxEntryID = cur.fetchall()[0][0]
+    if maxEntryID == None:
+        entryID = 0
+    else:
+        entryID = maxEntryID + 1
 
 
     con.commit()
