@@ -1,6 +1,7 @@
 import sqlite3
 import pandas as pd
 import openpyxl
+import datefinder
 
 
 # MAIN PROCESS
@@ -28,16 +29,20 @@ def main(datadict):
 
     # Entry
 
-    cols = []
+    cols = {}
+    entries = pd.DataFrame()
+
     if datadict["data_types"][0]:
-        cols += [openpyxl.utils.column_index_from_string(datadict["data_columns"][0][0]) - 1]
+        cols[0] = openpyxl.utils.column_index_from_string(datadict["data_columns"][0][0]) - 1
         for i in range(1, len(datadict["data_columns"][0])):
             if len(datadict["data_columns"][0][i]) <= 3:
-                cols += [openpyxl.utils.column_index_from_string(datadict["data_columns"][0][i]) - 1]
-        print(cols)
-        entries = datadict["df"].iloc[int(datadict["working_rows"][0][0])-1:int(datadict["working_rows"][0][1]), cols]
-        print(entries)
-    # TODO data_types[1] and data_types
+                cols[i] = openpyxl.utils.column_index_from_string(datadict["data_columns"][0][i]) - 1
+            else:
+                cols[i] = None
+        cols_list = list(filter(lambda item: item is not None, cols.values()))
+        entries = datadict["df"].iloc[int(datadict["working_rows"][0][0])-1:int(datadict["working_rows"][0][1]), cols_list]
+
+    # TODO data_types[1] and data_types[2]
 
     cur.execute("SELECT max(entryID) FROM Entry")
     maxEntryID = cur.fetchall()[0][0]
@@ -45,6 +50,15 @@ def main(datadict):
         entryID = 0
     else:
         entryID = maxEntryID + 1
+
+    if datadict["data_types"][0]:
+        for index, entry in entries.iterrows():
+            date = next(datefinder.find_dates(entry.loc[cols[0]]))
+            type = entry.loc[cols[4]]
+            cur.execute("INSERT INTO Entry VALUES (?, ?, ?, ?)", (entryID, sourceID, date, type))
+            entryID += 1
+
+    # TODO data_types[1] and data_types[2]
 
 
     con.commit()
