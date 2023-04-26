@@ -34,7 +34,10 @@ def main(datadict):
         cols += [openpyxl.utils.column_index_from_string(datadict["data_columns"][0][0]) - 1]
         if len(datadict["data_columns"][0][1]) <= 3:
             cols += [openpyxl.utils.column_index_from_string(datadict["data_columns"][0][1]) - 1]
-        cols += [openpyxl.utils.column_index_from_string(datadict["data_columns"][0][2]) - 1, openpyxl.utils.column_index_from_string(datadict["data_columns"][0][3]) - 1]
+        if len(datadict["data_columns"][0][2]) <= 3:
+            cols += [openpyxl.utils.column_index_from_string(datadict["data_columns"][0][2]) - 1]
+        if len(datadict["data_columns"][0][3]) <= 3:
+            cols += [openpyxl.utils.column_index_from_string(datadict["data_columns"][0][3]) - 1]
         print(cols)
         entries = datadict["df"].iloc[int(datadict["working_rows"][0][0])-1:int(datadict["working_rows"][0][1]), cols]
         print(entries)

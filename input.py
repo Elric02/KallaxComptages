@@ -370,7 +370,7 @@ def pack_part6(frame5):
         columns += openpyxl.utils.get_column_letter(i+1)
 
     label6 = tk.Label(frame6,
-                      text="6. Donnez les colonnes suivantes (laissez vide si colonne pas présente)",
+                      text="6. Donnez les colonnes suivantes",
                       font='Helvetica 16 bold')
     frame6_1 = tk.Frame(frame6)
     label6_1 = tk.Label(frame6_1, text="Date : ", font='Helvetica 10')
@@ -386,12 +386,12 @@ def pack_part6(frame5):
     frame6_3 = tk.Frame(frame6)
     label6_3 = tk.Label(frame6_3, text="Vitesse : ", font='Helvetica 10')
     entry6_3_var = tk.StringVar()
-    entry6_3_var.set("A")
+    entry6_3_var.set("Pas de valeur")
     entry6_3 = tk.OptionMenu(frame6_3, entry6_3_var, *columns)
     frame6_4 = tk.Frame(frame6)
     label6_4 = tk.Label(frame6_4, text="Bruit : ", font='Helvetica 10')
     entry6_4_var = tk.StringVar()
-    entry6_4_var.set("A")
+    entry6_4_var.set("Pas de valeur")
     entry6_4 = tk.OptionMenu(frame6_4, entry6_4_var, *columns)
 
     label6a = tk.Label(frame6,
