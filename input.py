@@ -3,7 +3,6 @@ from tkinter import filedialog as tk_fd
 import tkintermapview as tkmv
 import pandas as pd
 import openpyxl
-import xlsxwriter
 
 
 # DATA SPECIFICATION
@@ -319,7 +318,7 @@ def pack_part5(frame4):
 
     columns = []
     for i in range(df.shape[1]):
-        columns += xlsxwriter.utility.xl_col_to_name(i)
+        columns += openpyxl.utils.get_column_letter(i+1)
 
     label5a = tk.Label(frame5, text="5a. Donnez les colonnes contenant les valeurs de date et d'heure",
                        font='Helvetica 16 bold')
@@ -368,7 +367,7 @@ def pack_part6(frame5):
 
     columns = []
     for i in range(df.shape[1]):
-        columns += xlsxwriter.utility.xl_col_to_name(i)
+        columns += openpyxl.utils.get_column_letter(i+1)
 
     label6 = tk.Label(frame6,
                       text="6. Donnez les colonnes suivantes (laissez vide si colonne pas présente)",
