@@ -145,10 +145,10 @@ def set_label_columns(frame5, entry5a_1_var, entry5a_2_var, entry5b):
 
 
 # Function to set actual data columns
-def set_data_columns(frame6, entry6_1_var, entry6a_1_var, entry6a_2_var, entry6a_3_var, entry6a_4_var, entry6a_5_var, entry6a_6_var, entry6b_1_var, entry6a_7_var, entry6_2_var):
+def set_data_columns(frame6, entry6_1_var, entry6_2_var, entry6_3_var, entry6_4_var, entry6a_1_var, entry6a_2_var, entry6a_3_var, entry6a_4_var, entry6a_5_var, entry6a_6_var, entry6b_1_var, entry6a_7_var):
     global data_columns
     if data_types[0]:
-        data_columns[0] = [entry6_1_var.get(), entry6_2_var.get()]
+        data_columns[0] = [entry6_1_var.get(), entry6_2_var.get(), entry6_3_var.get(), entry6_4_var.get()]
     else:
         if data_types[1]:
             data_columns[1] = [entry6a_1_var.get(), entry6a_2_var.get(), entry6a_3_var.get(), entry6a_4_var.get(), entry6a_5_var.get(), entry6a_6_var.get(), entry6a_7_var.get()]
@@ -311,7 +311,7 @@ def pack_part4(frame3):
     button4.pack()
 
 
-# PART 5 : DEFINING DATE/HOUR AND/OR SPEED COLUMNS (AGGREGATED ONLY)
+# PART 5 : DEFINING DATE/HOUR AND/OR SPEED COLUMNS (AGGREGATED ONLY, SKIPPED IF RAW)
 
 def pack_part5(frame4):
     frame5 = tk.Frame(window)
@@ -374,16 +374,26 @@ def pack_part6(frame5):
                       text="6. Donnez les colonnes suivantes (laissez vide si colonne pas présente)",
                       font='Helvetica 16 bold')
     frame6_1 = tk.Frame(frame6)
-    label6_1 = tk.Label(frame6_1, text="Vitesse : ", font='Helvetica 10')
+    label6_1 = tk.Label(frame6_1, text="Date : ", font='Helvetica 10')
     entry6_1_var = tk.StringVar()
     entry6_1_var.set("A")
-    print(columns)
     entry6_1 = tk.OptionMenu(frame6_1, entry6_1_var, *columns)
     frame6_2 = tk.Frame(frame6)
-    label6_2 = tk.Label(frame6_2, text="Bruit : ", font='Helvetica 10')
+    label6_2 = tk.Label(frame6_2, text='Heure : ', font='Helvetica 10')
     entry6_2_var = tk.StringVar()
-    entry6_2_var.set("A")
-    entry6_2 = tk.OptionMenu(frame6_2, entry6_2_var, *columns)
+    entry6_2_var.set('Déjà présent dans "Date"')
+    columns_with_other = ['Déjà présent dans "Date"'] + columns
+    entry6_2 = tk.OptionMenu(frame6_2, entry6_2_var, *columns_with_other)
+    frame6_3 = tk.Frame(frame6)
+    label6_3 = tk.Label(frame6_3, text="Vitesse : ", font='Helvetica 10')
+    entry6_3_var = tk.StringVar()
+    entry6_3_var.set("A")
+    entry6_3 = tk.OptionMenu(frame6_3, entry6_3_var, *columns)
+    frame6_4 = tk.Frame(frame6)
+    label6_4 = tk.Label(frame6_4, text="Bruit : ", font='Helvetica 10')
+    entry6_4_var = tk.StringVar()
+    entry6_4_var.set("A")
+    entry6_4 = tk.OptionMenu(frame6_4, entry6_4_var, *columns)
 
     label6a = tk.Label(frame6,
                        text="6a. Donnez les colonnes suivantes - données agrégées par heure (laissez vide si colonne pas présente)",
@@ -433,14 +443,16 @@ def pack_part6(frame5):
     entry6b_1_var.set("A")
     entry6b_1 = tk.OptionMenu(frame6b_1, entry6b_1_var, *columns)
 
-    button6 = tk.Button(frame6, text="valider", command= lambda: set_data_columns(frame6, entry6_1_var, entry6a_1_var,
+    button6 = tk.Button(frame6, text="valider", command= lambda: set_data_columns(frame6, entry6_1_var, entry6_2_var,
+                                                                                  entry6_3_var, entry6_4_var, entry6a_1_var,
                                                                                   entry6a_2_var, entry6a_3_var, entry6a_4_var,
                                                                                   entry6a_5_var, entry6a_6_var, entry6a_7_var,
-                                                                                  entry6b_1_var, entry6_2_var))
+                                                                                  entry6b_1_var))
 
     frame5.pack_forget()
     if data_types[0]:
-        for packing in [label6, frame6_1, label6_1, entry6_1, frame6_2, label6_2, entry6_2]:
+        for packing in [label6, frame6_1, label6_1, entry6_1, frame6_2, label6_2, entry6_2,
+                        frame6_3, label6_3, entry6_3, frame6_4, label6_4, entry6_4]:
             if type(packing) == tk.Frame or packing == label6:
                 packing.pack()
             elif type(packing) == tk.Label:
