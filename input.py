@@ -368,6 +368,8 @@ def pack_part6(frame5):
     columns = []
     for i in range(df.shape[1]):
         columns += openpyxl.utils.get_column_letter(i+1)
+    columns_with_other = ['Déjà présent dans "Date"'] + columns
+    columns_with_none = ['Pas de valeur'] + columns
 
     label6 = tk.Label(frame6,
                       text="6. Donnez les colonnes suivantes",
@@ -381,23 +383,22 @@ def pack_part6(frame5):
     label6_2 = tk.Label(frame6_2, text='Heure : ', font='Helvetica 10')
     entry6_2_var = tk.StringVar()
     entry6_2_var.set('Déjà présent dans "Date"')
-    columns_with_other = ['Déjà présent dans "Date"'] + columns
     entry6_2 = tk.OptionMenu(frame6_2, entry6_2_var, *columns_with_other)
     frame6_3 = tk.Frame(frame6)
     label6_3 = tk.Label(frame6_3, text="Vitesse : ", font='Helvetica 10')
     entry6_3_var = tk.StringVar()
     entry6_3_var.set("Pas de valeur")
-    entry6_3 = tk.OptionMenu(frame6_3, entry6_3_var, *columns)
+    entry6_3 = tk.OptionMenu(frame6_3, entry6_3_var, *columns_with_none)
     frame6_4 = tk.Frame(frame6)
     label6_4 = tk.Label(frame6_4, text="Bruit : ", font='Helvetica 10')
     entry6_4_var = tk.StringVar()
     entry6_4_var.set("Pas de valeur")
-    entry6_4 = tk.OptionMenu(frame6_4, entry6_4_var, *columns)
+    entry6_4 = tk.OptionMenu(frame6_4, entry6_4_var, *columns_with_none)
     frame6_5 = tk.Frame(frame6)
     label6_5 = tk.Label(frame6_5, text="Type de véhicule : ", font='Helvetica 10')
     entry6_5_var = tk.StringVar()
     entry6_5_var.set("Pas de valeur")
-    entry6_5 = tk.OptionMenu(frame6_5, entry6_5_var, *columns)
+    entry6_5 = tk.OptionMenu(frame6_5, entry6_5_var, *columns_with_none)
 
     label6a = tk.Label(frame6,
                        text="6a. Donnez les colonnes suivantes - données agrégées par heure (laissez vide si colonne pas présente)",
