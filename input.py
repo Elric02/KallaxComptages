@@ -3,6 +3,7 @@ from tkinter import filedialog as tk_fd
 import tkintermapview as tkmv
 import pandas as pd
 import openpyxl
+import csv
 
 
 # DATA SPECIFICATION
@@ -12,7 +13,7 @@ root = None
 loc = ""
 file = None
 filetype = ''
-xlsx_sheets = []
+xlsx_sheets = [None]
 working_element = ''
 df = None
 data_types = [False, False, False] # raw, time-aggregated, speed-aggregated
@@ -31,7 +32,7 @@ def begin(newWindow, rootDef):
     root = rootDef
     print("Starting input process...")
     filetype = ''
-    xlsx_sheets = []
+    xlsx_sheets = [None]
     working_element = ''
     df = None
     data_types = [False, False, False] # raw, time-aggregated, speed-aggregated
@@ -74,28 +75,29 @@ def choose_file(frame1):
     global filetype
     filetype = loc[loc.rindex('.'):]
     print("Importing", filetype, "located at", loc)
-    global file, xlsx_sheets
-    file = pd.ExcelFile(loc)
-    xlsx_sheets = file.sheet_names
+    if filetype == ".xlsx":
+        global file, xlsx_sheets
+        file = pd.ExcelFile(loc)
+        xlsx_sheets = file.sheet_names
     pack_part2(frame1)
 
 
 # Function to set working element (separator or working sheet)
 def set_working_element(frame2, entry2a_var, entry2b):
-    global working_element
+    global working_element, file, df
     if filetype == ".xlsx":
         if entry2a_var.get() == "" or entry2a_var.get() == "Cliquez ici":
             return
         else:
             working_element = entry2a_var.get()
+        df = file.parse(sheet_name=working_element, header=None)
     else:
         if entry2b.get() == "":
             return
         else:
             working_element = entry2b.get()
+        df = pd.read_csv(loc, delimiter=working_element, header=None)
     print("Working element set as", working_element)
-    global file, df
-    df = file.parse(sheet_name=working_element, header=None)
     pack_part3(frame2)
 
 

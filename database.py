@@ -64,7 +64,6 @@ def main(datadict):
             entryID += 1
 
     # TODO hour / date séparés
-    # TODO CSV
     # TODO data_types[1] and data_types[2]
 
 
