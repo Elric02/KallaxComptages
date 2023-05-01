@@ -85,7 +85,7 @@ def choose_file(frame1):
 
 
 # Function to set working element (separator or working sheet)
-def set_working_element(frame2, entry2a_var, entry2b):
+def set_working_element(frame2, entry2a_var):
     global working_element, file, df
     if filetype == ".xlsx":
         if entry2a_var.get() == "" or entry2a_var.get() == "Cliquez ici":
@@ -93,11 +93,10 @@ def set_working_element(frame2, entry2a_var, entry2b):
         else:
             working_element = entry2a_var.get()
         df = file.parse(sheet_name=working_element, header=None)
-    else:
-        if entry2b.get() == "":
-            return
-        else:
-            working_element = entry2b.get()
+    elif filetype == ".csv":
+        # 4096 is the amount of bytes that are read (in case the CSV file is large)
+        data = open(loc, "r").read(4096)
+        working_element = csv.Sniffer().sniff(data).delimiter
         df = pd.read_csv(loc, delimiter=working_element, header=None)
     print("Working element set as", working_element)
     pack_part3(frame2)
@@ -140,7 +139,7 @@ def generateColumnsMenu():
     for i in range(df.shape[1]):
         if filetype == ".xlsx":
             columns += openpyxl.utils.get_column_letter(i+1)
-        else:
+        elif filetype == ".csv":
             str_max_length = 10
             if len(str(df.iloc[0, i])) > str_max_length:
                 columns.append(str(i+1) + " (1ère val : " + str(df.iloc[0, i])[:str_max_length] + ".)")
@@ -210,19 +209,15 @@ def pack_part2(frame1):
     entry2a_var.set("Cliquez ici")
     entry2a = tk.OptionMenu(frame2, entry2a_var, *xlsx_sheets)
 
-    label2b = tk.Label(frame2, text="2. Définissez le séparateur de colonnes (par exemple ;)",
-                       font='Helvetica 16 bold')
-    entry2b = tk.Entry(frame2, bd=5)
+    button2 = tk.Button(frame2, text="valider", command= lambda: set_working_element(frame2, entry2a_var))
 
-    button2 = tk.Button(frame2, text="valider", command= lambda: set_working_element(frame2, entry2a_var, entry2b))
-
+    frame1.pack_forget()
     if filetype == ".xlsx":
         label2a.pack()
         entry2a.pack()
-    else:
-        label2b.pack()
-        entry2b.pack()
-    frame1.pack_forget()
+    elif filetype == ".csv":
+        set_working_element(frame2, entry2a_var)
+        return
     button2.pack()
 
 
@@ -242,7 +237,7 @@ def pack_part3(frame2):
         check3_2.pack()
         button3.pack()
 
-    label3 = tk.Label(frame3, text="2. Définissez le type de données disponibles", font='Helvetica 16 bold')
+    label3 = tk.Label(frame3, text="3. Définissez le type de données disponibles", font='Helvetica 16 bold')
     radio3var = tk.IntVar()
     radio3_1 = tk.Radiobutton(frame3, text="données brutes", variable=radio3var, value=1, command=unpack_checkbox3)
     radio3_2 = tk.Radiobutton(frame3, text="données agrégées", variable=radio3var, value=2, command=pack_checkbox3)
