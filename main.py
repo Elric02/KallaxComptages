@@ -4,6 +4,10 @@ import pandas as pd
 
 # INPUT
 
+# These variables are used in the input.py part 6 option menus and then considered as None in database.py
+optionmenu_with_other = 'Déjà présent dans "Date"'
+optionmenu_with_none = 'Pas de valeur'
+
 def launch_input():
     root.withdraw()
     input_window = tk.Toplevel(root)
@@ -28,7 +32,7 @@ def send_data(datadict, root):
     db_label = tk.Label(db_frame, text="Envoi des données dans la base de données...", font='Helvetica 16 bold')
     db_label.pack()
     import database
-    database.main(datadict)
+    database.insert_db(datadict)
 
 
 # MAIN

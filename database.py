@@ -4,16 +4,19 @@ import openpyxl
 import datefinder
 import datetime
 
+import main
+
 
 # MAIN PROCESS
 
-def main(datadict):
+def insert_db(datadict):
 
     # Initializing
 
     print("Starting transfer to database with datadict", datadict)
     con = sqlite3.connect('db/database.db')
     cur = con.cursor()
+
 
     # Source
 
@@ -33,12 +36,14 @@ def main(datadict):
     entries = pd.DataFrame()
 
     if datadict["data_types"][0]:
-        cols[0] = openpyxl.utils.column_index_from_string(datadict["data_columns"][0][0]) - 1
-        for i in range(1, len(datadict["data_columns"][0])):
-            if len(datadict["data_columns"][0][i]) <= 3:
-                cols[i] = openpyxl.utils.column_index_from_string(datadict["data_columns"][0][i]) - 1
-            else:
+        for i in range(len(datadict["data_columns"][0])):
+            if datadict["data_columns"][0][i] == main.optionmenu_with_none or datadict["data_columns"][0][i] == main.optionmenu_with_other:
                 cols[i] = None
+            else:
+                if datadict["filetype"] == ".xlsx":
+                    cols[i] = openpyxl.utils.column_index_from_string(datadict["data_columns"][0][i]) - 1
+                else:
+                    cols[i] = int(datadict["data_columns"][0][i].split(" (")[0]) - 1
         cols_list = list(filter(lambda item: item is not None, cols.values()))
         entries = datadict["df"].iloc[int(datadict["working_rows"][0][0])-1:int(datadict["working_rows"][0][1]), cols_list]
 
@@ -57,7 +62,6 @@ def main(datadict):
             if cols[1] is not None:
                 hour = next(datefinder.find_dates(entry.loc[cols[1]]))
                 date = datetime.datetime.combine(date.date(), hour.time())
-                print(hour, date)
             type = entry.loc[cols[4]]
             cur.execute("INSERT INTO Entry VALUES (?, ?, ?, ?)", (entryID, sourceID, date, type))
 

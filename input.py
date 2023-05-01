@@ -5,6 +5,8 @@ import pandas as pd
 import openpyxl
 import csv
 
+import main
+
 
 # DATA SPECIFICATION
 
@@ -15,7 +17,7 @@ file = None
 filetype = ''
 xlsx_sheets = [None]
 working_element = ''
-df = None
+df = pd.DataFrame()
 data_types = [False, False, False] # raw, time-aggregated, speed-aggregated
 working_rows = [[], [], []]
 date_hour_columns = [0, 0]
@@ -59,9 +61,9 @@ def end_input(frame7):
         "speed_column": speed_column,
         "data_columns": data_columns,
         "location": location,
-        "filename": filename
+        "filename": filename,
+        "filetype": filetype
     }
-    import main
     global root
     main.receive_input(datadict, window, root)
 
@@ -130,6 +132,21 @@ def set_working_rows(frame4, entry4a_1, entry4a_2, entry4b_1, entry4b_2, entry4c
         print("Working rows set for speed-aggregated data as :", *working_rows[2])
     print("Proceeding to part 5")
     pack_part5(frame4)
+
+
+# Function that returns a list containing letters of the alphabet, or numbers with first value of the column (depending on the file type)
+def generateColumnsMenu():
+    columns = []
+    for i in range(df.shape[1]):
+        if filetype == ".xlsx":
+            columns += openpyxl.utils.get_column_letter(i+1)
+        else:
+            str_max_length = 10
+            if len(str(df.iloc[0, i])) > str_max_length:
+                columns.append(str(i+1) + " (1ère val : " + str(df.iloc[0, i])[:str_max_length] + ".)")
+            else:
+                columns.append(str(i+1) + " (1ère val : " + str(df.iloc[0, i])[:str_max_length] + ")")
+    return columns
 
 
 # Function to set date/hour and/or speed columns
@@ -251,33 +268,33 @@ def pack_part4(frame3):
     label4a = tk.Label(frame4, text="4a. Donnez les numéros des lignes utilisées",
                        font='Helvetica 16 bold')
     frame4a_1 = tk.Frame(frame4)
-    label4a_1 = tk.Label(frame4a_1, text="Début (incluse) : ", font='Helvetica 10')
+    label4a_1 = tk.Label(frame4a_1, text="Début (inclus) : ", font='Helvetica 10')
     entry4a_1 = tk.Entry(frame4a_1, bd=3)
     entry4a_1.insert(0, "1")
     frame4a_2 = tk.Frame(frame4)
-    label4a_2 = tk.Label(frame4a_2, text="Fin (incluse) : ", font='Helvetica 10')
+    label4a_2 = tk.Label(frame4a_2, text="Fin (inclus) : ", font='Helvetica 10')
     entry4a_2 = tk.Entry(frame4a_2, bd=3)
     entry4a_2.insert(0, str(df.shape[0]))
 
     label4b = tk.Label(frame4, text="4b. Donnez les numéros des lignes utilisées pour les données agrégées par tranches de temps",
                        font='Helvetica 16 bold')
     frame4b_1 = tk.Frame(frame4)
-    label4b_1 = tk.Label(frame4b_1, text="Début (incluse) : ", font='Helvetica 10')
+    label4b_1 = tk.Label(frame4b_1, text="Début (inclus) : ", font='Helvetica 10')
     entry4b_1 = tk.Entry(frame4b_1, bd=3)
     entry4b_1.insert(0, "1")
     frame4b_2 = tk.Frame(frame4)
-    label4b_2 = tk.Label(frame4b_2, text="Fin (incluse) : ", font='Helvetica 10')
+    label4b_2 = tk.Label(frame4b_2, text="Fin (inclus) : ", font='Helvetica 10')
     entry4b_2 = tk.Entry(frame4b_2, bd=3)
     entry4b_2.insert(0, str(df.shape[0]))
 
     label4c = tk.Label(frame4, text="4c. Donnez les numéros des lignes utilisées pour les données agrégées par tranches de vitesse",
                        font='Helvetica 16 bold')
     frame4c_1 = tk.Frame(frame4)
-    label4c_1 = tk.Label(frame4c_1, text="Début (incluse) : ", font='Helvetica 10')
+    label4c_1 = tk.Label(frame4c_1, text="Début (inclus) : ", font='Helvetica 10')
     entry4c_1 = tk.Entry(frame4c_1, bd=3)
     entry4c_1.insert(0, "1")
     frame4c_2 = tk.Frame(frame4)
-    label4c_2 = tk.Label(frame4c_2, text="Fin (incluse) : ", font='Helvetica 10')
+    label4c_2 = tk.Label(frame4c_2, text="Fin (inclus) : ", font='Helvetica 10')
     entry4c_2 = tk.Entry(frame4c_2, bd=3)
     entry4c_2.insert(0, str(df.shape[0]))
 
@@ -318,27 +335,25 @@ def pack_part5(frame4):
     frame5 = tk.Frame(window)
     frame5.pack()
 
-    columns = []
-    for i in range(df.shape[1]):
-        columns += openpyxl.utils.get_column_letter(i+1)
+    columns = generateColumnsMenu()
 
     label5a = tk.Label(frame5, text="5a. Donnez les colonnes contenant les valeurs de date et d'heure",
                        font='Helvetica 16 bold')
     frame5a_1 = tk.Frame(frame5)
     label5a_1 = tk.Label(frame5a_1, text="Colonne de dates : ", font='Helvetica 10')
     entry5a_1_var = tk.StringVar()
-    entry5a_1_var.set("A")
+    entry5a_1_var.set(columns[0])
     entry5a_1 = tk.OptionMenu(frame5a_1, entry5a_1_var, *columns)
     frame5a_2 = tk.Frame(frame5)
     label5a_2 = tk.Label(frame5a_2, text="Colonne d'heures : ", font='Helvetica 10')
     entry5a_2_var = tk.StringVar()
-    entry5a_2_var.set("A")
+    entry5a_2_var.set(columns[0])
     entry5a_2 = tk.OptionMenu(frame5a_2, entry5a_2_var, *columns)
 
     label5b = tk.Label(frame5, text="5b. Donnez la colonne contenant les valeurs de tranches de vitesse",
                        font='Helvetica 16 bold')
     entry5b_var = tk.StringVar()
-    entry5b_var.set("A")
+    entry5b_var.set(columns[0])
     entry5b = tk.OptionMenu(frame5, entry5b_var, *columns)
 
     button5 = tk.Button(frame5, text="valider", command= lambda: set_label_columns(frame5, entry5a_1_var, entry5a_2_var, entry5b_var))
@@ -367,11 +382,9 @@ def pack_part6(frame5):
     frame6 = tk.Frame(window)
     frame6.pack()
 
-    columns = []
-    for i in range(df.shape[1]):
-        columns += openpyxl.utils.get_column_letter(i+1)
-    columns_with_other = ['Déjà présent dans "Date"'] + columns
-    columns_with_none = ['Pas de valeur'] + columns
+    columns = generateColumnsMenu()
+    columns_with_other = [main.optionmenu_with_other] + columns
+    columns_with_none = [main.optionmenu_with_none] + columns
 
     label6 = tk.Label(frame6,
                       text="6. Donnez les colonnes suivantes",
@@ -379,75 +392,75 @@ def pack_part6(frame5):
     frame6_1 = tk.Frame(frame6)
     label6_1 = tk.Label(frame6_1, text="Date : ", font='Helvetica 10')
     entry6_1_var = tk.StringVar()
-    entry6_1_var.set("A")
+    entry6_1_var.set(columns[0])
     entry6_1 = tk.OptionMenu(frame6_1, entry6_1_var, *columns)
     frame6_2 = tk.Frame(frame6)
     label6_2 = tk.Label(frame6_2, text='Heure : ', font='Helvetica 10')
     entry6_2_var = tk.StringVar()
-    entry6_2_var.set('Déjà présent dans "Date"')
+    entry6_2_var.set(columns_with_other[0])
     entry6_2 = tk.OptionMenu(frame6_2, entry6_2_var, *columns_with_other)
     frame6_3 = tk.Frame(frame6)
     label6_3 = tk.Label(frame6_3, text="Vitesse : ", font='Helvetica 10')
     entry6_3_var = tk.StringVar()
-    entry6_3_var.set("Pas de valeur")
+    entry6_3_var.set(columns_with_none[0])
     entry6_3 = tk.OptionMenu(frame6_3, entry6_3_var, *columns_with_none)
     frame6_4 = tk.Frame(frame6)
     label6_4 = tk.Label(frame6_4, text="Bruit : ", font='Helvetica 10')
     entry6_4_var = tk.StringVar()
-    entry6_4_var.set("Pas de valeur")
+    entry6_4_var.set(columns_with_none[0])
     entry6_4 = tk.OptionMenu(frame6_4, entry6_4_var, *columns_with_none)
     frame6_5 = tk.Frame(frame6)
     label6_5 = tk.Label(frame6_5, text="Type de véhicule : ", font='Helvetica 10')
     entry6_5_var = tk.StringVar()
-    entry6_5_var.set("Pas de valeur")
+    entry6_5_var.set(columns_with_none[0])
     entry6_5 = tk.OptionMenu(frame6_5, entry6_5_var, *columns_with_none)
 
     label6a = tk.Label(frame6,
-                       text="6a. Donnez les colonnes suivantes - données agrégées par heure (laissez vide si colonne pas présente)",
+                       text="6a. Donnez les colonnes suivantes - données agrégées par heure",
                        font='Helvetica 16 bold')
     frame6a_1 = tk.Frame(frame6)
     label6a_1 = tk.Label(frame6a_1, text="Nb de passages : ", font='Helvetica 10')
     entry6a_1_var = tk.StringVar()
-    entry6a_1_var.set("A")
+    entry6a_1_var.set(columns[0])
     entry6a_1 = tk.OptionMenu(frame6a_1, entry6a_1_var, *columns)
     frame6a_2 = tk.Frame(frame6)
     label6a_2 = tk.Label(frame6a_2, text="Vmoyenne : ", font='Helvetica 10')
     entry6a_2_var = tk.StringVar()
-    entry6a_2_var.set("A")
-    entry6a_2 = tk.OptionMenu(frame6a_2, entry6a_2_var, *columns)
+    entry6a_2_var.set(columns_with_none[0])
+    entry6a_2 = tk.OptionMenu(frame6a_2, entry6a_2_var, *columns_with_none)
     frame6a_3 = tk.Frame(frame6)
     label6a_3 = tk.Label(frame6a_3, text="Vmax : ", font='Helvetica 10')
     entry6a_3_var = tk.StringVar()
-    entry6a_3_var.set("A")
-    entry6a_3 = tk.OptionMenu(frame6a_3, entry6a_3_var, *columns)
+    entry6a_3_var.set(columns_with_none[0])
+    entry6a_3 = tk.OptionMenu(frame6a_3, entry6a_3_var, *columns_with_none)
     frame6a_4 = tk.Frame(frame6)
     label6a_4 = tk.Label(frame6a_4, text="V85 : ", font='Helvetica 10')
     entry6a_4_var = tk.StringVar()
-    entry6a_4_var.set("A")
-    entry6a_4 = tk.OptionMenu(frame6a_4, entry6a_4_var, *columns)
+    entry6a_4_var.set(columns_with_none[0])
+    entry6a_4 = tk.OptionMenu(frame6a_4, entry6a_4_var, *columns_with_none)
     frame6a_5 = tk.Frame(frame6)
     label6a_5 = tk.Label(frame6a_5, text="V50 : ", font='Helvetica 10')
     entry6a_5_var = tk.StringVar()
-    entry6a_5_var.set("A")
-    entry6a_5 = tk.OptionMenu(frame6a_5, entry6a_5_var, *columns)
+    entry6a_5_var.set(columns_with_none[0])
+    entry6a_5 = tk.OptionMenu(frame6a_5, entry6a_5_var, *columns_with_none)
     frame6a_6 = tk.Frame(frame6)
     label6a_6 = tk.Label(frame6a_6, text="V30 : ", font='Helvetica 10')
     entry6a_6_var = tk.StringVar()
-    entry6a_6_var.set("A")
-    entry6a_6 = tk.OptionMenu(frame6a_6, entry6a_6_var, *columns)
+    entry6a_6_var.set(columns_with_none[0])
+    entry6a_6 = tk.OptionMenu(frame6a_6, entry6a_6_var, *columns_with_none)
     frame6a_7 = tk.Frame(frame6)
     label6a_7 = tk.Label(frame6a_7, text="V10 : ", font='Helvetica 10')
     entry6a_7_var = tk.StringVar()
-    entry6a_7_var.set("A")
-    entry6a_7 = tk.OptionMenu(frame6a_7, entry6a_7_var, *columns)
+    entry6a_7_var.set(columns_with_none[0])
+    entry6a_7 = tk.OptionMenu(frame6a_7, entry6a_7_var, *columns_with_none)
 
     label6b = tk.Label(frame6,
-                       text="6b. Donnez les colonnes suivantes - données agrégées par vitesse (laissez vide si colonne pas présente)",
+                       text="6b. Donnez les colonnes suivantes - données agrégées par vitesse",
                        font='Helvetica 16 bold')
     frame6b_1 = tk.Frame(frame6)
     label6b_1 = tk.Label(frame6b_1, text="Nb de passages : ", font='Helvetica 10')
     entry6b_1_var = tk.StringVar()
-    entry6b_1_var.set("A")
+    entry6b_1_var.set(columns[0])
     entry6b_1 = tk.OptionMenu(frame6b_1, entry6b_1_var, *columns)
 
     button6 = tk.Button(frame6, text="valider", command= lambda: set_data_columns(frame6, entry6_1_var, entry6_2_var,
