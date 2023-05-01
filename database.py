@@ -18,9 +18,8 @@ def main(datadict):
 
     cur.execute("SELECT max(sourceID) FROM Source")
     maxSourceID = cur.fetchall()[0][0]
-    if maxSourceID == None:
-        sourceID = 0
-    else:
+    sourceID = 0
+    if maxSourceID != None:
         sourceID = maxSourceID + 1
     file = datadict["filename"]
     place = str(datadict["location"])
@@ -46,19 +45,29 @@ def main(datadict):
 
     cur.execute("SELECT max(entryID) FROM Entry")
     maxEntryID = cur.fetchall()[0][0]
-    if maxEntryID == None:
-        entryID = 0
-    else:
+    entryID = 0
+    if maxEntryID != None:
         entryID = maxEntryID + 1
 
     if datadict["data_types"][0]:
         for index, entry in entries.iterrows():
+            # Entry
             date = next(datefinder.find_dates(entry.loc[cols[0]]))
             type = entry.loc[cols[4]]
             cur.execute("INSERT INTO Entry VALUES (?, ?, ?, ?)", (entryID, sourceID, date, type))
+
+            # Unique
+            speed = entry.loc[cols[2]] if cols[2] is not None else None
+            noise = entry.loc[cols[3]] if cols[3] is not None else None
+            cur.execute("INSERT INTO 'Unique' VALUES (?, ?, ?)", (entryID, speed, noise))
+
             entryID += 1
 
+    # TODO hour / date séparés
+    # TODO CSV
     # TODO data_types[1] and data_types[2]
+
+
 
 
     con.commit()
