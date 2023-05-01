@@ -2,6 +2,7 @@ import sqlite3
 import pandas as pd
 import openpyxl
 import datefinder
+import datetime
 
 
 # MAIN PROCESS
@@ -46,13 +47,17 @@ def main(datadict):
     cur.execute("SELECT max(entryID) FROM Entry")
     maxEntryID = cur.fetchall()[0][0]
     entryID = 0
-    if maxEntryID != None:
+    if maxEntryID is not None:
         entryID = maxEntryID + 1
 
     if datadict["data_types"][0]:
         for index, entry in entries.iterrows():
             # Entry
             date = next(datefinder.find_dates(entry.loc[cols[0]]))
+            if cols[1] is not None:
+                hour = next(datefinder.find_dates(entry.loc[cols[1]]))
+                date = datetime.datetime.combine(date.date(), hour.time())
+                print(hour, date)
             type = entry.loc[cols[4]]
             cur.execute("INSERT INTO Entry VALUES (?, ?, ?, ?)", (entryID, sourceID, date, type))
 
@@ -63,7 +68,6 @@ def main(datadict):
 
             entryID += 1
 
-    # TODO hour / date séparés
     # TODO data_types[1] and data_types[2]
 
 
