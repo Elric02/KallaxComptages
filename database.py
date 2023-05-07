@@ -30,24 +30,10 @@ def insert_db(datadict):
     cur.execute("INSERT INTO Source VALUES (?, ?, ?)", (file, sourceID, place))
 
 
-    # Entry
+    # Entry and its subobjects
 
     cols = {}
     entries = pd.DataFrame()
-
-    if datadict["data_types"][0]:
-        for i in range(len(datadict["data_columns"][0])):
-            if datadict["data_columns"][0][i] == main.optionmenu_with_none or datadict["data_columns"][0][i] == main.optionmenu_with_other:
-                cols[i] = None
-            else:
-                if datadict["filetype"] == ".xlsx":
-                    cols[i] = openpyxl.utils.column_index_from_string(datadict["data_columns"][0][i]) - 1
-                else:
-                    cols[i] = int(datadict["data_columns"][0][i].split(" (")[0]) - 1
-        cols_list = list(filter(lambda item: item is not None, cols.values()))
-        entries = datadict["df"].iloc[int(datadict["working_rows"][0][0])-1:int(datadict["working_rows"][0][1]), cols_list]
-
-    # TODO data_types[1] and data_types[2]
 
     cur.execute("SELECT max(entryID) FROM Entry")
     maxEntryID = cur.fetchall()[0][0]
@@ -56,6 +42,17 @@ def insert_db(datadict):
         entryID = maxEntryID + 1
 
     if datadict["data_types"][0]:
+        for i, elem in enumerate(datadict["data_columns"][0]):
+            if elem == main.optionmenu_with_none or elem == main.optionmenu_with_other:
+                cols[i] = None
+            else:
+                if datadict["filetype"] == ".xlsx":
+                    cols[i] = openpyxl.utils.column_index_from_string(elem) - 1
+                else:
+                    cols[i] = int(datadict["data_columns"][0][i].split(" (")[0]) - 1
+        cols_list = list(filter(lambda item: item is not None, cols.values()))
+        entries = datadict["df"].iloc[int(datadict["working_rows"][0][0])-1:int(datadict["working_rows"][0][1]), cols_list]
+
         for index, entry in entries.iterrows():
             # Entry
             date = next(datefinder.find_dates(entry.loc[cols[0]]))
@@ -72,7 +69,11 @@ def insert_db(datadict):
 
             entryID += 1
 
+    elif datadict["data_types"][1]:
+        print("not supported yet")
     # TODO data_types[1] and data_types[2]
+
+
 
 
 
