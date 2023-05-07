@@ -378,7 +378,7 @@ def pack_part6(frame5):
     frame6.pack()
 
     columns = generateColumnsMenu()
-    columns_with_other = [main.optionmenu_with_other] + columns
+    columns_with_other = [main.optionmenu_with_other_date] + columns
     columns_with_none = [main.optionmenu_with_none] + columns
 
     label6 = tk.Label(frame6,

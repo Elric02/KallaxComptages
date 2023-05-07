@@ -4,8 +4,9 @@ import pandas as pd
 
 # INPUT
 
-# These variables are used in the input.py part 6 option menus and then considered as None in database.py
-optionmenu_with_other = 'Déjà présent dans "Date"'
+# These variables are used in the input.py parts 4 to 6 option menus and then considered as None in database.py
+optionmenu_with_other_date = 'Déjà présent dans "Date"'
+optionmenu_with_other_begin = 'Déjà présent dans "Début"'
 optionmenu_with_none = 'Pas de valeur'
 
 def launch_input():
