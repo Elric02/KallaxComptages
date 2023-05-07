@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog as tk_fd
 import tkintermapview as tkmv
+import tkcalendar as tkca
 import pandas as pd
 import openpyxl
 import csv
@@ -162,7 +163,9 @@ def set_label_columns(frame5, entry5a_1_var, entry5a_2_var, entry5b):
 
 
 # Function to set actual data columns
-def set_data_columns(frame6, entry6_1_var, entry6_2_var, entry6_3_var, entry6_4_var, entry6_5_var, entry6a_1_var, entry6a_2_var, entry6a_3_var, entry6a_4_var, entry6a_5_var, entry6a_6_var, entry6b_1_var, entry6a_7_var):
+def set_data_columns(frame6, entry6_1_var, entry6_2_var, entry6_3_var, entry6_4_var, entry6_5_var, entry6a_1_var,
+                     entry6a_2_var, entry6a_3_var, entry6a_4_var, entry6a_5_var, entry6a_6_var, entry6a_7_var,
+                     entry6b_1_var, entry6b_2, entry6b_3):
     global data_columns
     if data_types[0]:
         data_columns[0] = [entry6_1_var.get(), entry6_2_var.get(), entry6_3_var.get(), entry6_4_var.get(), entry6_5_var.get()]
@@ -170,7 +173,7 @@ def set_data_columns(frame6, entry6_1_var, entry6_2_var, entry6_3_var, entry6_4_
         if data_types[1]:
             data_columns[1] = [entry6a_1_var.get(), entry6a_2_var.get(), entry6a_3_var.get(), entry6a_4_var.get(), entry6a_5_var.get(), entry6a_6_var.get(), entry6a_7_var.get()]
         if data_types[2]:
-            data_columns[2] = [entry6b_1_var.get()]
+            data_columns[2] = [entry6b_1_var.get(), entry6b_2.get_date(), entry6b_3.get_date()]
     print("Data received, proceeding to part 7")
     pack_part7(frame6)
 
@@ -457,12 +460,20 @@ def pack_part6(frame5):
     entry6b_1_var = tk.StringVar()
     entry6b_1_var.set(columns[0])
     entry6b_1 = tk.OptionMenu(frame6b_1, entry6b_1_var, *columns)
+    frame6b_2 = tk.Frame(frame6)
+    label6b_2 = tk.Label(frame6b_2, text="Jour du début du comptage : ", font='Helvetica 10')
+    entry6b_2 = tkca.Calendar(frame6b_2, selectmode="day")
+    # TODO : moyen de rajouter un "ça a été fait en 1 jour"
+    frame6b_3 = tk.Frame(frame6)
+    label6b_3 = tk.Label(frame6b_3, text="Jour de la fin du comptage : ", font='Helvetica 10')
+    entry6b_3 = tkca.Calendar(frame6b_3, selectmode="day")
 
     button6 = tk.Button(frame6, text="valider", command= lambda: set_data_columns(frame6, entry6_1_var, entry6_2_var,
                                                                                   entry6_3_var, entry6_4_var, entry6_5_var,
                                                                                   entry6a_1_var, entry6a_2_var, entry6a_3_var,
                                                                                   entry6a_4_var, entry6a_5_var, entry6a_6_var,
-                                                                                  entry6a_7_var, entry6b_1_var))
+                                                                                  entry6a_7_var, entry6b_1_var, entry6b_2,
+                                                                                  entry6b_3))
 
     frame5.pack_forget()
     if data_types[0]:
@@ -486,12 +497,13 @@ def pack_part6(frame5):
                 elif type(packing) == tk.OptionMenu:
                     packing.pack(side=tk.RIGHT)
         if data_types[2]:
-            for packing in [label6b, frame6b_1, label6b_1, entry6b_1]:
+            for packing in [label6b, frame6b_1, label6b_1, entry6b_1, frame6b_2, label6b_2, entry6b_2,
+                            frame6b_3, label6b_3, entry6b_3]:
                 if type(packing) == tk.Frame or packing == label6b:
                     packing.pack()
                 elif type(packing) == tk.Label:
                     packing.pack(side=tk.LEFT)
-                elif type(packing) == tk.OptionMenu:
+                elif type(packing) == tk.OptionMenu or type(packing) == tkca.Calendar:
                     packing.pack(side=tk.RIGHT)
     button6.pack()
 
