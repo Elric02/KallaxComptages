@@ -23,6 +23,7 @@ data_types = [False, False, False] # raw, time-aggregated, speed-aggregated
 working_rows = [[], [], []]
 date_hour_columns = [0, 0]
 speed_column = 0
+speedspan_column = 0
 data_columns = [[], [], []]
 location = [0, 0]
 
@@ -30,7 +31,7 @@ location = [0, 0]
 # BEGIN AND END FUNCTION
 
 def begin(newWindow, rootDef):
-    global window, root, filetype, xlsx_sheets, working_element, df, data_types, working_rows, date_hour_columns, speed_column, data_columns, location
+    global window, root, filetype, xlsx_sheets, working_element, df, data_types, working_rows, date_hour_columns, speed_column, speedspan_column, data_columns, location
     window = newWindow
     root = rootDef
     print("Starting input process...")
@@ -42,6 +43,7 @@ def begin(newWindow, rootDef):
     working_rows = [[], [], []]
     date_hour_columns = [0, 0]
     speed_column = 0
+    speedspan_column = 0
     data_columns = [[], [], []]
     location = [0, 0]
     pack_part1()
@@ -60,6 +62,7 @@ def end_input(frame7):
         "working_rows": working_rows,
         "date_hour_columns": date_hour_columns,
         "speed_column": speed_column,
+        "speedspan_column": speedspan_column,
         "data_columns": data_columns,
         "location": location,
         "filename": filename,
@@ -150,14 +153,15 @@ def generateColumnsMenu():
 
 
 # Function to set date/hour and/or speed columns
-def set_label_columns(frame5, entry5a_1_var, entry5a_2_var, entry5b):
-    global date_hour_columns, speed_column
+def set_label_columns(frame5, entry5a_1_var, entry5a_2_var, entry5b_1, entry5b_2):
+    global date_hour_columns, speed_column, speedspan_column
     if data_types[1]:
         date_hour_columns = [entry5a_1_var.get(), entry5a_2_var.get()]
         print("Date and hour columns set to :", *date_hour_columns)
     if data_types[2]:
-        speed_column = entry5b.get()
-        print("Speed column set to:", speed_column)
+        speed_column = entry5b_1.get()
+        speedspan_column = entry5b_2.get()
+        print("Speed column set to:", speed_column, "and", speedspan_column)
     print("Proceeding to part 6")
     pack_part6(frame5)
 
@@ -165,7 +169,7 @@ def set_label_columns(frame5, entry5a_1_var, entry5a_2_var, entry5b):
 # Function to set actual data columns
 def set_data_columns(frame6, entry6_1_var, entry6_2_var, entry6_3_var, entry6_4_var, entry6_5_var, entry6a_1_var,
                      entry6a_2_var, entry6a_3_var, entry6a_4_var, entry6a_5_var, entry6a_6_var, entry6a_7_var,
-                     entry6b_1_var, entry6b_2, entry6b_3):
+                     entry6b_1_var, entry6b_2):
     global data_columns
     if data_types[0]:
         data_columns[0] = [entry6_1_var.get(), entry6_2_var.get(), entry6_3_var.get(), entry6_4_var.get(), entry6_5_var.get()]
@@ -173,7 +177,7 @@ def set_data_columns(frame6, entry6_1_var, entry6_2_var, entry6_3_var, entry6_4_
         if data_types[1]:
             data_columns[1] = [entry6a_1_var.get(), entry6a_2_var.get(), entry6a_3_var.get(), entry6a_4_var.get(), entry6a_5_var.get(), entry6a_6_var.get(), entry6a_7_var.get()]
         if data_types[2]:
-            data_columns[2] = [entry6b_1_var.get(), entry6b_2.get_date(), entry6b_3.get_date()]
+            data_columns[2] = [entry6b_1_var.get(), entry6b_2.get_date()]
     print("Data received, proceeding to part 7")
     pack_part7(frame6)
 
@@ -334,6 +338,7 @@ def pack_part5(frame4):
     frame5.pack()
 
     columns = generateColumnsMenu()
+    columns_with_other = [main.optionmenu_with_other_begin] + columns
 
     label5a = tk.Label(frame5, text="5a. Donnez les colonnes contenant les valeurs de date et d'heure",
                        font='Helvetica 16 bold')
@@ -345,20 +350,28 @@ def pack_part5(frame4):
     frame5a_2 = tk.Frame(frame5)
     label5a_2 = tk.Label(frame5a_2, text="Colonne d'heures : ", font='Helvetica 10')
     entry5a_2_var = tk.StringVar()
-    entry5a_2_var.set(columns[0])
-    entry5a_2 = tk.OptionMenu(frame5a_2, entry5a_2_var, *columns)
+    entry5a_2_var.set(columns_with_other[0])
+    entry5a_2 = tk.OptionMenu(frame5a_2, entry5a_2_var, *columns_with_other)
 
-    label5b = tk.Label(frame5, text="5b. Donnez la colonne contenant les valeurs de tranches de vitesse",
+    label5b = tk.Label(frame5, text="5b. Donnez les colonnes contenant les valeurs de tranches de vitesse",
                        font='Helvetica 16 bold')
-    entry5b_var = tk.StringVar()
-    entry5b_var.set(columns[0])
-    entry5b = tk.OptionMenu(frame5, entry5b_var, *columns)
+    frame5b_1 = tk.Frame(frame5)
+    label5b_1 = tk.Label(frame5b_1, text="Début : ", font='Helvetica 10')
+    entry5b_1_var = tk.StringVar()
+    entry5b_1_var.set(columns[0])
+    entry5b_1 = tk.OptionMenu(frame5b_1, entry5b_1_var, *columns)
+    frame5b_2 = tk.Frame(frame5)
+    label5b_2 = tk.Label(frame5b_2, text="Fin : ", font='Helvetica 10')
+    entry5b_2_var = tk.StringVar()
+    entry5b_2_var.set(columns_with_other[0])
+    entry5b_2 = tk.OptionMenu(frame5b_2, entry5b_2_var, *columns_with_other)
 
-    button5 = tk.Button(frame5, text="valider", command= lambda: set_label_columns(frame5, entry5a_1_var, entry5a_2_var, entry5b_var))
+    button5 = tk.Button(frame5, text="valider", command= lambda: set_label_columns(frame5, entry5a_1_var, entry5a_2_var,
+                                                                                   entry5b_1_var, entry5b_2_var))
 
     frame4.pack_forget()
     if data_types[0]:
-        set_label_columns(frame5, entry5a_1_var, entry5a_2_var, entry5b_var)
+        set_label_columns(frame5, entry5a_1_var, entry5a_2_var, entry5b_1_var, entry5b_2_var)
         return
     if data_types[1]:
         label5a.pack()
@@ -370,7 +383,13 @@ def pack_part5(frame4):
         entry5a_2.pack(side=tk.RIGHT)
     if data_types[2]:
         label5b.pack()
-        entry5b.pack()
+        frame5b_1.pack()
+        label5b_1.pack(side=tk.LEFT)
+        entry5b_1.pack(side=tk.RIGHT)
+        frame5b_2.pack()
+        label5b_2.pack(side=tk.LEFT)
+        entry5b_2.pack(side=tk.RIGHT)
+
     button5.pack()
 
 
@@ -463,17 +482,12 @@ def pack_part6(frame5):
     frame6b_2 = tk.Frame(frame6)
     label6b_2 = tk.Label(frame6b_2, text="Jour du début du comptage : ", font='Helvetica 10')
     entry6b_2 = tkca.Calendar(frame6b_2, selectmode="day")
-    # TODO : moyen de rajouter un "ça a été fait en 1 jour"
-    frame6b_3 = tk.Frame(frame6)
-    label6b_3 = tk.Label(frame6b_3, text="Jour de la fin du comptage : ", font='Helvetica 10')
-    entry6b_3 = tkca.Calendar(frame6b_3, selectmode="day")
 
     button6 = tk.Button(frame6, text="valider", command= lambda: set_data_columns(frame6, entry6_1_var, entry6_2_var,
                                                                                   entry6_3_var, entry6_4_var, entry6_5_var,
                                                                                   entry6a_1_var, entry6a_2_var, entry6a_3_var,
                                                                                   entry6a_4_var, entry6a_5_var, entry6a_6_var,
-                                                                                  entry6a_7_var, entry6b_1_var, entry6b_2,
-                                                                                  entry6b_3))
+                                                                                  entry6a_7_var, entry6b_1_var, entry6b_2))
 
     frame5.pack_forget()
     if data_types[0]:
@@ -497,8 +511,7 @@ def pack_part6(frame5):
                 elif type(packing) == tk.OptionMenu:
                     packing.pack(side=tk.RIGHT)
         if data_types[2]:
-            for packing in [label6b, frame6b_1, label6b_1, entry6b_1, frame6b_2, label6b_2, entry6b_2,
-                            frame6b_3, label6b_3, entry6b_3]:
+            for packing in [label6b, frame6b_1, label6b_1, entry6b_1, frame6b_2, label6b_2, entry6b_2]:
                 if type(packing) == tk.Frame or packing == label6b:
                     packing.pack()
                 elif type(packing) == tk.Label:
