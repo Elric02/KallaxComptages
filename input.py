@@ -138,7 +138,7 @@ def generateColumnsMenu():
     columns = []
     for i in range(df.shape[1]):
         if filetype == ".xlsx":
-            columns += openpyxl.utils.get_column_letter(i+1)
+            columns.append(openpyxl.utils.get_column_letter(i+1))
         elif filetype == ".csv":
             str_max_length = 10
             if len(str(df.iloc[0, i])) > str_max_length:
