@@ -98,7 +98,7 @@ def insert_db(datadict):
             if cols[1] is not None:
                 hour = next(datefinder.find_dates(str(entry.loc[cols[1]])))
                 date = datetime.datetime.combine(date.date(), hour.time())
-            vehicletype = entry.loc[cols[4]]
+            vehicletype = None
             cur.execute("INSERT INTO Entry VALUES (?, ?, ?, ?)", (entryID, sourceID, date, vehicletype))
 
             # AggregatedTime
@@ -111,11 +111,13 @@ def insert_db(datadict):
             v10 = entry.loc[cols[8]] if cols[8] is not None else None
             cur.execute("INSERT INTO 'AggregatedTime' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (entryID, str(timespan), nb,
                                                                                             vmean, vmax, v85, v50, v30, v10))
-
             entryID += 1
 
+        # Reset cols in case there is also speed-aggregated data
+        cols = {}
+
     if datadict["data_types"][2]:
-        for i, elem in enumerate(datadict["date_hour_columns"] + datadict["data_columns"][2]):
+        for i, elem in enumerate([datadict["speed_column"]] + [datadict["speedspan_column"]] + [datadict["data_columns"][2][0]]):
             if elem == main.optionmenu_with_none or elem == main.optionmenu_with_other_begin:
                 cols[i] = None
             else:
@@ -126,41 +128,32 @@ def insert_db(datadict):
         cols_list = list(filter(lambda item: item is not None, cols.values()))
         entries = datadict["df"].iloc[int(datadict["working_rows"][2][0]) - 1:int(datadict["working_rows"][2][1]), cols_list]
 
-        # find timespan
-        firstdate = next(datefinder.find_dates(str(entries.loc[int(datadict["working_rows"][2][0]), cols[0]])))
+        # find speedspan
         if cols[1] is not None:
-            hour = next(datefinder.find_dates(str(entries.loc[int(datadict["working_rows"][2][0]), cols[1]])))
-            firstdate = datetime.datetime.combine(firstdate.date(), hour.time())
-        seconddate = next(datefinder.find_dates(str(entries.loc[int(datadict["working_rows"][2][0])+1, cols[0]])))
-        if cols[1] is not None:
-            hour = next(datefinder.find_dates(str(entries.loc[int(datadict["working_rows"][2][0])+1, cols[1]])))
-            seconddate = datetime.datetime.combine(seconddate.date(), hour.time())
-        timespan = seconddate - firstdate
+            endvalue = entries.loc[int(datadict["working_rows"][2][0]), cols[1]]
+            startvalue = entries.loc[int(datadict["working_rows"][2][0]), cols[0]]
+            if type(endvalue) != str and type(startvalue) != str:
+                speedspan = endvalue - startvalue
+            else:
+                speedspan = None
+        else:
+            speedspan = None
 
         for index, entry in entries.iterrows():
             # Entry
-            date = next(datefinder.find_dates(str(entry.loc[cols[0]])))
-            if cols[1] is not None:
-                hour = next(datefinder.find_dates(str(entry.loc[cols[1]])))
-                date = datetime.datetime.combine(date.date(), hour.time())
-            vehicletype = entry.loc[cols[4]]
+            date = datetime.datetime.strptime(str(datadict["data_columns"][2][1]), '%m/%d/%y')
+            vehicletype = None
             cur.execute("INSERT INTO Entry VALUES (?, ?, ?, ?)", (entryID, sourceID, date, vehicletype))
 
             # AggregatedSpeed
+            speed = entry.loc[cols[0]] if cols[0] is not None else None
             nb = entry.loc[cols[2]] if cols[2] is not None else None
-            vmean = entry.loc[cols[3]] if cols[3] is not None else None
-            vmax = entry.loc[cols[4]] if cols[4] is not None else None
-            v85 = entry.loc[cols[5]] if cols[5] is not None else None
-            v50 = entry.loc[cols[6]] if cols[6] is not None else None
-            v30 = entry.loc[cols[7]] if cols[7] is not None else None
-            v10 = entry.loc[cols[8]] if cols[8] is not None else None
-            cur.execute("INSERT INTO 'AggregatedSpeed' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (entryID, str(timespan), nb,
-                                                                                            vmean, vmax, v85, v50, v30, v10))
+            cur.execute("INSERT INTO 'AggregatedSpeed' VALUES (?, ?, ?, ?)", (entryID, speed, speedspan, nb))
 
             entryID += 1
 
 
-            # TODO : speed aggregated, time déjà présent dans date pour Agrégé, preview de la première valeur pour xlsx, type de véhicule pour agrégés
+            # TODO : time déjà présent dans date pour Agrégé, preview de la première valeur pour xlsx, type de véhicule pour agrégés (time et speed), récap avant insertion dans db
 
 
     con.commit()
