@@ -47,7 +47,7 @@ def insert_db(datadict):
                 cols[i] = None
             else:
                 if datadict["filetype"] == ".xlsx":
-                    cols[i] = openpyxl.utils.column_index_from_string(elem) - 1
+                    cols[i] = openpyxl.utils.column_index_from_string(elem.split(" (")[0]) - 1
                 else:
                     cols[i] = int(elem.split(" (")[0]) - 1
         cols_list = list(filter(lambda item: item is not None, cols.values()))
@@ -75,7 +75,7 @@ def insert_db(datadict):
                 cols[i] = None
             else:
                 if datadict["filetype"] == ".xlsx":
-                    cols[i] = openpyxl.utils.column_index_from_string(elem) - 1
+                    cols[i] = openpyxl.utils.column_index_from_string(elem.split(" (")[0]) - 1
                 else:
                     cols[i] = int(elem.split(" (")[0]) - 1
         cols_list = list(filter(lambda item: item is not None, cols.values()))
@@ -122,7 +122,7 @@ def insert_db(datadict):
                 cols[i] = None
             else:
                 if datadict["filetype"] == ".xlsx":
-                    cols[i] = openpyxl.utils.column_index_from_string(elem) - 1
+                    cols[i] = openpyxl.utils.column_index_from_string(elem.split(" (")[0]) - 1
                 else:
                     cols[i] = int(elem.split(" (")[0]) - 1
         cols_list = list(filter(lambda item: item is not None, cols.values()))
@@ -153,7 +153,7 @@ def insert_db(datadict):
             entryID += 1
 
 
-            # TODO : time déjà présent dans date pour Agrégé, preview de la première valeur pour xlsx, type de véhicule pour agrégés (time et speed), récap avant insertion dans db
+            # TODO : preview de la première valeur pour xlsx, type de véhicule pour agrégés (time et speed), récap avant insertion dans db
 
 
     con.commit()
