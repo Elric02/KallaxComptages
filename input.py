@@ -26,12 +26,14 @@ speed_column = 0
 speedspan_column = 0
 data_columns = [[], [], []]
 location = [0, 0]
+datadict = {}
 
 
 # BEGIN AND END FUNCTION
 
 def begin(newWindow, rootDef):
-    global window, root, filetype, xlsx_sheets, working_element, df, data_types, working_rows, date_hour_columns, speed_column, speedspan_column, data_columns, location
+    global window, root, filetype, xlsx_sheets, working_element, df, data_types, working_rows, date_hour_columns,\
+            speed_column, speedspan_column, data_columns, location
     window = newWindow
     root = rootDef
     print("Starting input process...")
@@ -49,27 +51,16 @@ def begin(newWindow, rootDef):
     pack_part1()
 
 # Function to end the input process
-
-def end_input(frame7):
-    frame7.pack_forget()
-    print("All necessary information gathered !")
-    filename = loc.split("/")[-1]
-    print(filename)
-    datadict = {
-        "working_element": working_element,
-        "df": df,
-        "data_types": data_types,
-        "working_rows": working_rows,
-        "date_hour_columns": date_hour_columns,
-        "speed_column": speed_column,
-        "speedspan_column": speedspan_column,
-        "data_columns": data_columns,
-        "location": location,
-        "filename": filename,
-        "filetype": filetype
-    }
-    global root
+def end_input(frame8):
+    frame8.pack_forget()
+    print("All necessary information gathered, processing to database...")
     main.receive_input(datadict, window, root)
+
+# Function to cancel the input process and start back at the beginning of it
+def cancel_input(frame8):
+    frame8.pack_forget()
+    print("Cancelling input process and initiating it again.")
+    begin(window, root)
 
 
 # FUNCTIONS DEFINING DATA SPECIFICATIONS
@@ -122,6 +113,7 @@ def set_data_types(frame3, radio3var, check3var_1, check3var_2):
     pack_part4(frame3)
 
 
+# Function to set which rows we will work with
 def set_working_rows(frame4, entry4a_1, entry4a_2, entry4b_1, entry4b_2, entry4c_1, entry4c_2):
     global working_rows
     if data_types[0]:
@@ -191,6 +183,26 @@ def set_location(coords):
     global location
     location = coords
     print("Location set to :", location)
+
+# Function to gather all collected informaiton in a dictionary
+def create_dict(frame7):
+    filename = loc.split("/")[-1]
+    print("Creating data dictionary for file", filename)
+    global datadict
+    datadict = {
+        "working_element": working_element,
+        "df": df,
+        "data_types": data_types,
+        "working_rows": working_rows,
+        "date_hour_columns": date_hour_columns,
+        "speed_column": speed_column,
+        "speedspan_column": speedspan_column,
+        "data_columns": data_columns,
+        "location": location,
+        "filename": filename,
+        "filetype": filetype
+    }
+    pack_part8(frame7)
 
 
 # PACKING FUNCTIONS
@@ -494,7 +506,7 @@ def pack_part6(frame5):
         columns = generateColumnsMenu(2)
 
         label6b = tk.Label(frame6,
-                           text="6b. Donnez les colonnes suivantes - données agrégées par vitesse",
+                           text="6b. Donnez les colonnes et valeurs suivantes - données agrégées par vitesse",
                            font='Helvetica 16 bold')
         frame6b_1 = tk.Frame(frame6)
         label6b_1 = tk.Label(frame6b_1, text="Nb de passages : ", font='Helvetica 10')
@@ -554,16 +566,100 @@ def pack_part7(frame6):
         map7.set_marker(coords[0], coords[1], text="Localisation du comptage")
         set_location(coords)
 
-    label7 = tk.Label(frame6, text="7. Cliquez sur la localisation exacte du comptage", font='Helvetica 16 bold')
+    label7 = tk.Label(frame7, text="7. Cliquez sur la localisation exacte du comptage", font='Helvetica 16 bold')
     map7 = tkmv.TkinterMapView(frame7, width=800, height=600)
     map7.set_position(46.521934, 6.626156)  # Lausanne, Switzerland
     map7.set_zoom(8)
     map7.add_left_click_map_command(set_marker)
 
-    button7 = tk.Button(frame7, text="valider", command= lambda: end_input(frame7))
+    button7 = tk.Button(frame7, text="valider", command= lambda: create_dict(frame7))
 
     frame6.pack_forget()
     label7.pack()
     map7.pack()
     button7.pack()
 
+
+# PART 8 : CONFIRMATION
+
+def pack_part8(frame7):
+    frame8 = tk.Frame(window)
+    frame8.pack()
+
+    label8 = tk.Label(frame8, text="Les informations suivantes vont être insérées dans la base de données.", font='Helvetica 16 bold')
+    labels8 = []
+    temp_text = "Nom du fichier utilisé : " + datadict["filename"]
+    labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+    temp_text = "Type des données : "
+    if datadict["working_rows"][0]:
+        temp_text += "brutes"
+    elif datadict["working_rows"][1] and datadict["working_rows"][2]:
+        temp_text += "agrégées par temps et agrégées par vitesse"
+    elif datadict["working_rows"][1]:
+        temp_text += "agrégées par temps"
+    elif datadict["working_rows"][2]:
+        temp_text += "agrégées par vitesse"
+    labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+    if datadict["data_types"][1]:
+        temp_text = "Colonne de la date : " + datadict["date_hour_columns"][0]
+        labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+        temp_text = "Colonne de l'heure : " + datadict["date_hour_columns"][1]
+        labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+    if datadict["data_types"][2]:
+        temp_text = "Colonne de la valeur de la tranche de vitesse (début) : " + str(datadict["speed_column"])
+        labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+        temp_text = "Colonne de la valeur de la tranche de vitesse (fin) : " + str(datadict["speedspan_column"])
+        labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+    if datadict["data_types"][0]:
+        temp_text = "Colonne de la date : " + str(datadict["data_columns"][0][0])
+        labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+        temp_text = "Colonne de l'heure : " + str(datadict["data_columns"][0][1])
+        labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+        temp_text = "Colonne de la vitesse : " + str(datadict["data_columns"][0][2])
+        labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+        temp_text = "Colonne du bruit : " + str(datadict["data_columns"][0][3])
+        labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+        temp_text = "Colonne du type de véhicule : " + str(datadict["data_columns"][0][4])
+        labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+    if datadict["data_types"][1]:
+        temp_text = "Colonne du nombre de passages (données agrégées par temps) : " + str(datadict["data_columns"][1][0])
+        labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+        temp_text = "Colonne de la vitesse moyenne : " + str(datadict["data_columns"][1][1])
+        labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+        temp_text = "Colonne de la vitesse maximum : " + str(datadict["data_columns"][1][2])
+        labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+        temp_text = "Colonne de la V85 : " + str(datadict["data_columns"][1][3])
+        labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+        temp_text = "Colonne de la V50 : " + str(datadict["data_columns"][1][4])
+        labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+        temp_text = "Colonne de la V30 : " + str(datadict["data_columns"][1][5])
+        labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+        temp_text = "Colonne de la V10 : " + str(datadict["data_columns"][1][6])
+        labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+    if datadict["data_types"][2]:
+        temp_text = "Colonne du nombre de passages (données agrégées par vitesse) : " + str(datadict["data_columns"][2][0])
+        labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+        original_date = datadict["data_columns"][2][1]
+        temp_text = "Jour du comptage : " + str(original_date.split("/")[1] + "." + original_date.split("/")[0] + "." + original_date.split("/")[2])
+        labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+    temp_text = "Numéros des lignes utilisées : "
+    if datadict["data_types"][0]:
+        temp_text += str(datadict["working_rows"][0][0]) + " à " + str(datadict["working_rows"][0][1])
+    elif datadict["data_types"][1] and datadict["data_types"][2]:
+        temp_text += str(datadict["working_rows"][1][0]) + " à " + str(datadict["working_rows"][1][1]) + " et " \
+                     + str(datadict["working_rows"][2][0]) + " à " + str(datadict["working_rows"][2][1])
+    elif datadict["data_types"][1]:
+        temp_text += str(datadict["working_rows"][1][0]) + " à " + str(datadict["working_rows"][1][1])
+    elif datadict["data_types"][2]:
+        temp_text += str(datadict["working_rows"][2][0]) + " à " + str(datadict["working_rows"][2][1])
+    labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+
+    button8a = tk.Button(frame8, text="annuler", command= lambda: cancel_input(frame8))
+    button8b = tk.Button(frame8, text="confirmer", command= lambda: end_input(frame8))
+
+    frame7.pack_forget()
+    label8.pack()
+    for label in labels8:
+        label.pack()
+    button8a.pack(side=tk.BOTTOM)
+    button8b.pack(side=tk.BOTTOM)

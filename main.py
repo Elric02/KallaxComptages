@@ -1,3 +1,5 @@
+# TODO : type de véhicule pour agrégés (time et speed), bouton retour pour input.py et database.py, interface de main.py, bases des deux derniers fichiers, commentaires, documentation
+
 import tkinter as tk
 import pandas as pd
 

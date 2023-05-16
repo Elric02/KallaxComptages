@@ -153,9 +153,6 @@ def insert_db(datadict):
             entryID += 1
 
 
-            # TODO : preview de la première valeur pour xlsx, type de véhicule pour agrégés (time et speed), récap avant insertion dans db
-
-
     con.commit()
     con.close()
     print("Transfer to database completed!")
