@@ -1,8 +1,6 @@
 # TODO : type de véhicule pour agrégés (time et speed), bouton retour pour input.py et database.py, interface de main.py, bases des deux derniers fichiers, commentaires, documentation
 
 import tkinter as tk
-import pandas as pd
-
 
 # INPUT
 
@@ -32,7 +30,7 @@ def send_data(datadict, root):
     database_window.title("KallaxComptages - database")
     db_frame = tk.Frame(database_window)
     db_frame.pack()
-    db_label = tk.Label(db_frame, text="Envoi des données dans la base de données...", font='Helvetica 16 bold')
+    db_label = tk.Label(db_frame, text="Données ajoutées à la base de données !", font='Helvetica 16 bold')
     db_label.pack()
     import database
     database.insert_db(datadict)
