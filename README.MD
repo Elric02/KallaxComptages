@@ -37,18 +37,18 @@ Une fois l'exécutable lancé, la fenêtre suivante apparait :
 
 ### Ajout de données
 
-##### Partie 1 : Choix du fichier
-[step 1](thesis/img/1.PNG)
+#### Partie 1 : Choix du fichier
+![step 1](thesis/img/1.PNG)
 <br>La première étape consiste à choisir le fichier contenant les informations à introduire dans la base de données.
 <br>Le fichier peut être au format .xlsx ou .csv.
 
-##### Partie 2 : Choix de la feuille à utiliser
-[step 2](thesis/img/2.PNG)
+#### Partie 2 : Choix de la feuille à utiliser
+![step 2](thesis/img/2.PNG)
 <br>Si le fichier choisi est au format .xlsx, cette étape consiste à choisir la feuille à utiliser.
 <br>Si le fichier est au format .csv, le programme détermine automatiquement le séparateur des colonnes et passe à l'étape suivante sans intervention de l'utilisateur.trice.
 
-##### Partie 3 : Choix du type de données présentes
-[step 3](thesis/img/3.PNG)
+#### Partie 3 : Choix du type de données présentes
+![step 3](thesis/img/3.PNG)
 <br>Cette étape consiste à spécifier le type de données présent dans le fichier. Il y a 3 types de données possibles :
 - Données brutes : chaque passage de véhicule est enregistré sur sa propre ligne.
 - Données agrégées par temps : chaque ligne représente les passages de véhicule sur une certaine période de temps, par exemple par tranches d'1h.
@@ -56,29 +56,29 @@ Une fois l'exécutable lancé, la fenêtre suivante apparait :
 
 Si des données brutes sont disponibles, le programme n'a pas besoin de données agrégées, d'où la sélection unique dans le menu. Autrement, il faut spécifier si les données à disposition sont agrégées par temps, par heure, ou si les deux types sont présents.
 
-##### Partie 4 : Choix des lignes à utiliser
-[step 4](thesis/img/4.PNG)
+#### Partie 4 : Choix des lignes à utiliser
+![step 4](thesis/img/4.PNG)
 <br>Cette étape consiste à spécifier les numéros de ligne du fichier à utiliser. Elle permet d'éviter de prendre en compte les éventuels en-têtes et lignes superflues contenues dans le fichier.
 <br>Par défaut, les lignes non-vides du fichier sont prises en compte.
 <br>Le contenu de la fenêtre varie en fonction des types de données spécifiées à l'étape 3.
 
-##### Partie 5 : Choix des colonnes de temps et/ou de vitesse
-[step 5](thesis/img/5.PNG)
+#### Partie 5 : Choix des colonnes de temps et/ou de vitesse
+![step 5](thesis/img/5.PNG)
 <br>Cette étape consiste à spécifier les numéros/lettres des colonnes contenant l'information des tranches de temps et/ou de vitesse (en fonction du type de données agrégées sélectionnées).
 <br>Elle est automatiquement passée si le type de données a été défini sur "brutes" à l'étape 3.
 
-##### Partie 6 : Choix des colonnes à utiliser
-[step 6](thesis/img/6.PNG)
+#### Partie 6 : Choix des colonnes à utiliser
+![step 6](thesis/img/6.PNG)
 <br>Cette étape consiste à spécifier les numéros/lettres des colonnes contenant les informations présentes dans le fichier.
 <br>Le contenu de la fenêtre varie en fonction des types de données spécifiées à l'étape 3.
 <br>Si des données agrégées par tranches de vitesse sont présentes, il est également demandé d'entrer le jour où le comptage a été effectué.
 
-##### Partie 7 : Choix de la localisation du comptage routier
-[step 7](thesis/img/7.PNG)
+#### Partie 7 : Choix de la localisation du comptage routier
+![step 7](thesis/img/7.PNG)
 <br>Cette étape consiste à préciser la localisation exacte du comptage routier, sous forme de pointeur sur une carte.
 
-##### Partie 8 : Récapitulatif des données à entrer
-[step 8](thesis/img/8.PNG)
+#### Partie 8 : Récapitulatif des données à entrer
+![step 8](thesis/img/8.PNG)
 <br>Cette étape consiste simplement à vérifier si les informations entrées précédemment sont correctes. Pour ce faire, le programme génère un récapitulatif contenant tout ce qui a été spécifié aux étapes précédentes.
 
 Une fois l'étape 8 validée, les données sont envoyées dans la base de données. Ceci peut prendre un peu de temps, en particulier si le comptage contient une grande quantité de données.
