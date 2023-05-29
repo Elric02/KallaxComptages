@@ -226,7 +226,7 @@ def pack_part2(frame1):
     frame2 = tk.Frame(window)
     frame2.pack()
 
-    label2a = tk.Label(frame2, text="2. Définissez la feuille à utiliser (par exemple feuille1)",
+    label2a = tk.Label(frame2, text="2. Définissez la feuille à utiliser",
                        font='Helvetica 16 bold')
     entry2a_var = tk.StringVar()
     entry2a_var.set("Cliquez ici")
