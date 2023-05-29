@@ -357,7 +357,7 @@ def pack_part5(frame4):
 
     if data_types[1]:
         columns = generateColumnsMenu(1)
-        columns_with_other = [main.optionmenu_with_other_begin] + columns
+        columns_with_date = [main.optionmenu_with_other_date] + columns
 
         label5a = tk.Label(frame5, text="5a. Donnez les colonnes contenant les valeurs de date et d'heure",
                            font='Helvetica 16 bold')
@@ -369,8 +369,8 @@ def pack_part5(frame4):
         frame5a_2 = tk.Frame(frame5)
         label5a_2 = tk.Label(frame5a_2, text="Colonne d'heures : ", font='Helvetica 10')
         entry5a_2_var = tk.StringVar()
-        entry5a_2_var.set(columns_with_other[0])
-        entry5a_2 = tk.OptionMenu(frame5a_2, entry5a_2_var, *columns_with_other)
+        entry5a_2_var.set(columns_with_date[0])
+        entry5a_2 = tk.OptionMenu(frame5a_2, entry5a_2_var, *columns_with_date)
 
     if data_types[2]:
         columns = generateColumnsMenu(2)
