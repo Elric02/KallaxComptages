@@ -29,7 +29,7 @@ location = [0, 0]
 datadict = {}
 
 
-# BEGIN AND END FUNCTION
+# BEGIN AND END FUNCTIONS
 
 def begin(newWindow, rootDef):
     global window, root, filetype, xlsx_sheets, working_element, df, data_types, working_rows, date_hour_columns,\
