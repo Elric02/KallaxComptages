@@ -80,16 +80,16 @@ if __name__ == "__main__":
     root_label = tk.Label(root, text="KallaxComptages", font='Helvetica 24 bold')
     root_label.pack()
 
-    button_input = tk.Button(root, text="Importer un fichier", command=launch_input)
+    button_input = tk.Button(root, text="Importer un fichier", cursor="hand2", command=launch_input)
     button_input.pack()
 
-    button_input = tk.Button(root, text="Sélectionner des données à analyser", command=launch_select)
+    button_input = tk.Button(root, text="Sélectionner des données à analyser", cursor="hand2", command=launch_select)
     button_input.pack()
 
-    button_empty = tk.Button(root, text="Vider la base de données", command=empty_database)
+    button_empty = tk.Button(root, text="Vider la base de données", cursor="hand2", command=empty_database)
     button_empty.pack()
 
-    button_quit = tk.Button(root, text="Quitter", command=root.destroy)
+    button_quit = tk.Button(root, text="Quitter", cursor="hand2", command=root.destroy)
     button_quit.pack()
 
     tk.mainloop()

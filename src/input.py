@@ -214,7 +214,7 @@ def pack_part1():
     frame1.pack()
 
     label1 = tk.Label(frame1, text="1. Choisissez votre fichier d'entrée", font='Helvetica 16 bold')
-    button1 = tk.Button(frame1, text="choisir", command= lambda: choose_file(frame1))
+    button1 = tk.Button(frame1, text="choisir", cursor="hand2", command= lambda: choose_file(frame1))
 
     label1.pack()
     button1.pack()
@@ -232,7 +232,7 @@ def pack_part2(frame1):
     entry2a_var.set("Cliquez ici")
     entry2a = tk.OptionMenu(frame2, entry2a_var, *xlsx_sheets)
 
-    button2 = tk.Button(frame2, text="valider", command= lambda: set_working_element(frame2, entry2a_var))
+    button2 = tk.Button(frame2, text="valider", cursor="hand2", command= lambda: set_working_element(frame2, entry2a_var))
 
     frame1.pack_forget()
     if filetype == ".xlsx":
@@ -262,13 +262,13 @@ def pack_part3(frame2):
 
     label3 = tk.Label(frame3, text="3. Définissez le type de données disponibles", font='Helvetica 16 bold')
     radio3var = tk.IntVar()
-    radio3_1 = tk.Radiobutton(frame3, text="données brutes", variable=radio3var, value=1, command=unpack_checkbox3)
-    radio3_2 = tk.Radiobutton(frame3, text="données agrégées", variable=radio3var, value=2, command=pack_checkbox3)
+    radio3_1 = tk.Radiobutton(frame3, text="données brutes", cursor="hand2", variable=radio3var, value=1, command=unpack_checkbox3)
+    radio3_2 = tk.Radiobutton(frame3, text="données agrégées", cursor="hand2", variable=radio3var, value=2, command=pack_checkbox3)
     check3var_1 = tk.IntVar()
     check3var_2 = tk.IntVar()
-    check3_1 = tk.Checkbutton(frame3, text="...par tranches de temps", variable=check3var_1, onvalue=1, offvalue=0)
-    check3_2 = tk.Checkbutton(frame3, text="...par tranches de vitesse", variable=check3var_2, onvalue=1, offvalue=0)
-    button3 = tk.Button(frame3, text="valider", command= lambda: set_data_types(frame3, radio3var, check3var_1, check3var_2))
+    check3_1 = tk.Checkbutton(frame3, text="...par tranches de temps", cursor="hand2", variable=check3var_1, onvalue=1, offvalue=0)
+    check3_2 = tk.Checkbutton(frame3, text="...par tranches de vitesse", cursor="hand2", variable=check3var_2, onvalue=1, offvalue=0)
+    button3 = tk.Button(frame3, text="valider", cursor="hand2", command= lambda: set_data_types(frame3, radio3var, check3var_1, check3var_2))
 
     frame2.pack_forget()
     label3.pack()
@@ -316,7 +316,7 @@ def pack_part4(frame3):
     entry4c_2 = tk.Entry(frame4c_2, bd=3)
     entry4c_2.insert(0, str(df.shape[0]))
 
-    button4 = tk.Button(frame4, text="valider",
+    button4 = tk.Button(frame4, text="valider", cursor="hand2",
                         command=lambda: set_working_rows(frame4, entry4a_1, entry4a_2, entry4b_1, entry4b_2, entry4c_1, entry4c_2))
 
     frame3.pack_forget()
@@ -389,7 +389,7 @@ def pack_part5(frame4):
         entry5b_2_var.set(columns_with_other[0])
         entry5b_2 = tk.OptionMenu(frame5b_2, entry5b_2_var, *columns_with_other)
 
-    button5 = tk.Button(frame5, text="valider", command= lambda: set_label_columns(frame5, entry5a_1_var, entry5a_2_var,
+    button5 = tk.Button(frame5, text="valider", cursor="hand2", command= lambda: set_label_columns(frame5, entry5a_1_var, entry5a_2_var,
                                                                                    entry5b_1_var, entry5b_2_var))
 
     frame4.pack_forget()
@@ -517,7 +517,7 @@ def pack_part6(frame5):
         label6b_2 = tk.Label(frame6b_2, text="Jour du début du comptage : ", font='Helvetica 10')
         entry6b_2 = tkca.Calendar(frame6b_2, selectmode="day")
 
-    button6 = tk.Button(frame6, text="valider", command= lambda: set_data_columns(frame6, entry6_1_var, entry6_2_var,
+    button6 = tk.Button(frame6, text="valider", cursor="hand2", command= lambda: set_data_columns(frame6, entry6_1_var, entry6_2_var,
                                                                                   entry6_3_var, entry6_4_var, entry6_5_var,
                                                                                   entry6a_1_var, entry6a_2_var, entry6a_3_var,
                                                                                   entry6a_4_var, entry6a_5_var, entry6a_6_var,
@@ -572,7 +572,7 @@ def pack_part7(frame6):
     map7.set_zoom(8)
     map7.add_left_click_map_command(set_marker)
 
-    button7 = tk.Button(frame7, text="valider", command= lambda: create_dict(frame7))
+    button7 = tk.Button(frame7, text="valider", cursor="hand2", command= lambda: create_dict(frame7))
 
     frame6.pack_forget()
     label7.pack()
@@ -654,8 +654,8 @@ def pack_part8(frame7):
         temp_text += str(datadict["working_rows"][2][0]) + " à " + str(datadict["working_rows"][2][1])
     labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
 
-    button8a = tk.Button(frame8, text="annuler", command= lambda: cancel_input(frame8))
-    button8b = tk.Button(frame8, text="confirmer", command= lambda: end_input(frame8))
+    button8a = tk.Button(frame8, text="annuler", cursor="hand2", command= lambda: cancel_input(frame8))
+    button8b = tk.Button(frame8, text="confirmer", cursor="hand2", command= lambda: end_input(frame8))
 
     frame7.pack_forget()
     label8.pack()
