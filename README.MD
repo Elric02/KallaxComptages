@@ -32,8 +32,8 @@ Son concept est le suivant :
 
 KallaxComptages ne nécessite pas vraiment d'installation. Il suffit de copier le dossier "out" sur votre machine, puis de lancer l'exécutable (.exe).
 
-Une fois l'exécutable lancé, la fenêtre suivante apparait :
-**SCREENSHOT**
+Une fois l'exécutable lancé, la fenêtre suivante apparait :<br>
+![main menu](thesis/img/mainmenu.PNG)
 
 ### Ajout de données
 

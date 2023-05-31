@@ -57,10 +57,32 @@ def end_input(frame8):
     main.receive_input(datadict, window, root)
 
 # Function to cancel the input process and start back at the beginning of it
-def cancel_input(frame8):
-    frame8.pack_forget()
+def cancel_input(current_frame):
+    current_frame.pack_forget()
     print("Cancelling input process and initiating it again.")
     begin(window, root)
+
+# Function to cancel the input process and go to the main menu
+def back_to_menu(current_frame, cancel_window):
+    cancel_window.destroy()
+    current_frame.pack_forget()
+    main.abort_input(window, root)
+
+
+# CANCELLING CONFIRMATION FUNCTION
+
+def confirm_cancel(current_frame):
+    cancel_window = tk.Toplevel(window)
+    cancel_frame = tk.Frame(cancel_window)
+    cancel_frame.pack()
+
+    label1 = tk.Label(cancel_frame, text="Confirmez-vous que vous voulez annuler l'opération en cours ?", font='Helvetica 14 bold')
+    button_yes = tk.Button(cancel_frame, text="Oui, retour au menu", cursor="hand2", command=lambda: back_to_menu(current_frame, cancel_window))
+    button_no = tk.Button(cancel_frame, text="Non, continuer l'opération en cours", cursor="hand2", command=lambda: cancel_window.destroy())
+
+    label1.pack()
+    button_yes.pack()
+    button_no.pack()
 
 
 # FUNCTIONS DEFINING DATA SPECIFICATIONS
@@ -215,9 +237,12 @@ def pack_part1():
 
     label1 = tk.Label(frame1, text="1. Choisissez votre fichier d'entrée", font='Helvetica 16 bold')
     button1 = tk.Button(frame1, text="choisir", cursor="hand2", command= lambda: choose_file(frame1))
+    cancel_label = tk.Label(frame1, text="Annuler", cursor="hand2", foreground="blue", font='Helvetica 7 underline')
+    cancel_label.bind("<Button-1>", lambda e: confirm_cancel(frame1))
 
     label1.pack()
     button1.pack()
+    cancel_label.pack(side=tk.LEFT)
 
 
 # PART 2 : DEFINING SEPARATORS/SHEET
@@ -233,6 +258,8 @@ def pack_part2(frame1):
     entry2a = tk.OptionMenu(frame2, entry2a_var, *xlsx_sheets)
 
     button2 = tk.Button(frame2, text="valider", cursor="hand2", command= lambda: set_working_element(frame2, entry2a_var))
+    cancel_label = tk.Label(frame2, text="Annuler", cursor="hand2", foreground="blue", font='Helvetica 7 underline')
+    cancel_label.bind("<Button-1>", lambda e: confirm_cancel(frame2))
 
     frame1.pack_forget()
     if filetype == ".xlsx":
@@ -242,6 +269,7 @@ def pack_part2(frame1):
         set_working_element(frame2, entry2a_var)
         return
     button2.pack()
+    cancel_label.pack(side=tk.LEFT)
 
 
 # PART 3 : DEFINING DATA TYPE
@@ -256,9 +284,11 @@ def pack_part3(frame2):
 
     def pack_checkbox3():
         button3.pack_forget()
+        cancel_label.pack_forget()
         check3_1.pack()
         check3_2.pack()
         button3.pack()
+        cancel_label.pack(side=tk.LEFT)
 
     label3 = tk.Label(frame3, text="3. Définissez le type de données disponibles", font='Helvetica 16 bold')
     radio3var = tk.IntVar()
@@ -269,12 +299,15 @@ def pack_part3(frame2):
     check3_1 = tk.Checkbutton(frame3, text="...par tranches de temps", cursor="hand2", variable=check3var_1, onvalue=1, offvalue=0)
     check3_2 = tk.Checkbutton(frame3, text="...par tranches de vitesse", cursor="hand2", variable=check3var_2, onvalue=1, offvalue=0)
     button3 = tk.Button(frame3, text="valider", cursor="hand2", command= lambda: set_data_types(frame3, radio3var, check3var_1, check3var_2))
+    cancel_label = tk.Label(frame3, text="Annuler", cursor="hand2", foreground="blue", font='Helvetica 7 underline')
+    cancel_label.bind("<Button-1>", lambda e: confirm_cancel(frame3))
 
     frame2.pack_forget()
     label3.pack()
     radio3_1.pack()
     radio3_2.pack()
     button3.pack()
+    cancel_label.pack(side=tk.LEFT)
 
 
 # PART 4 : DEFINING WORKING ROWS
@@ -318,6 +351,8 @@ def pack_part4(frame3):
 
     button4 = tk.Button(frame4, text="valider", cursor="hand2",
                         command=lambda: set_working_rows(frame4, entry4a_1, entry4a_2, entry4b_1, entry4b_2, entry4c_1, entry4c_2))
+    cancel_label = tk.Label(frame4, text="Annuler", cursor="hand2", foreground="blue", font='Helvetica 7 underline')
+    cancel_label.bind("<Button-1>", lambda e: confirm_cancel(frame4))
 
     frame3.pack_forget()
     if data_types[0]:
@@ -345,6 +380,7 @@ def pack_part4(frame3):
         label4c_2.pack(side=tk.LEFT)
         entry4c_2.pack(side=tk.RIGHT)
     button4.pack()
+    cancel_label.pack(side=tk.LEFT)
 
 
 # PART 5 : DEFINING DATE/HOUR AND/OR SPEED COLUMNS (AGGREGATED ONLY, SKIPPED IF RAW)
@@ -391,6 +427,8 @@ def pack_part5(frame4):
 
     button5 = tk.Button(frame5, text="valider", cursor="hand2", command= lambda: set_label_columns(frame5, entry5a_1_var, entry5a_2_var,
                                                                                    entry5b_1_var, entry5b_2_var))
+    cancel_label = tk.Label(frame5, text="Annuler", cursor="hand2", foreground="blue", font='Helvetica 7 underline')
+    cancel_label.bind("<Button-1>", lambda e: confirm_cancel(frame5))
 
     frame4.pack_forget()
     if data_types[0]:
@@ -414,6 +452,7 @@ def pack_part5(frame4):
         entry5b_2.pack(side=tk.RIGHT)
 
     button5.pack()
+    cancel_label.pack(side=tk.LEFT)
 
 
 # PART 6 : DEFINING USED COLUMNS
@@ -522,6 +561,8 @@ def pack_part6(frame5):
                                                                                   entry6a_1_var, entry6a_2_var, entry6a_3_var,
                                                                                   entry6a_4_var, entry6a_5_var, entry6a_6_var,
                                                                                   entry6a_7_var, entry6b_1_var, entry6b_2))
+    cancel_label = tk.Label(frame6, text="Annuler", cursor="hand2", foreground="blue", font='Helvetica 7 underline')
+    cancel_label.bind("<Button-1>", lambda e: confirm_cancel(frame6))
 
     frame5.pack_forget()
     if data_types[0]:
@@ -553,6 +594,7 @@ def pack_part6(frame5):
                 elif type(packing) == tk.OptionMenu or type(packing) == tkca.Calendar:
                     packing.pack(side=tk.RIGHT)
     button6.pack()
+    cancel_label.pack(side=tk.LEFT)
 
 
 # PART 7 : DEFINING LOCATION
@@ -573,11 +615,14 @@ def pack_part7(frame6):
     map7.add_left_click_map_command(set_marker)
 
     button7 = tk.Button(frame7, text="valider", cursor="hand2", command= lambda: create_dict(frame7))
+    cancel_label = tk.Label(frame7, text="Annuler", cursor="hand2", foreground="blue", font='Helvetica 7 underline')
+    cancel_label.bind("<Button-1>", lambda e: confirm_cancel(frame7))
 
     frame6.pack_forget()
     label7.pack()
     map7.pack()
     button7.pack()
+    cancel_label.pack(side=tk.LEFT)
 
 
 # PART 8 : CONFIRMATION

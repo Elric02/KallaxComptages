@@ -2,6 +2,7 @@
 
 import tkinter as tk
 
+
 # INPUT
 
 # These variables are used in the input.py parts 5 and 6 option menus and then considered as None in database.py
@@ -15,6 +16,10 @@ def launch_input():
     input_window.title("KallaxComptages - input")
     import input
     input.begin(input_window, root)
+
+def abort_input(input_window, root):
+    root.deiconify()
+    input_window.destroy()
 
 def receive_input(datadict, input_window, root):
     root.deiconify()
@@ -73,10 +78,7 @@ def empty_database():
 
 # MAIN
 
-if __name__ == "__main__":
-    root = tk.Tk()
-    root.title("KallaxComptages - main")
-
+def pack_main(root):
     root_label = tk.Label(root, text="KallaxComptages", font='Helvetica 24 bold')
     root_label.pack()
 
@@ -91,5 +93,11 @@ if __name__ == "__main__":
 
     button_quit = tk.Button(root, text="Quitter", cursor="hand2", command=root.destroy)
     button_quit.pack()
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    root.title("KallaxComptages - main")
+
+    pack_main(root)
 
     tk.mainloop()
