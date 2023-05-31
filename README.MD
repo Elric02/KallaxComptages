@@ -25,6 +25,7 @@ Son concept est le suivant :
 - Toute la partie analyse
 - Fonctionnalités plus avancées (data cleaning, détection d'erreurs...)
 - Prise en compte du sens de circulation
+- Prise en compte du type de véhicule pour les données agrégées
 - Standardisation des types de véhicules (ne donner le choix que parmi une liste établie)
 - Esthétique générale
 

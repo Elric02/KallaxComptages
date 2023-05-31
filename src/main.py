@@ -1,4 +1,4 @@
-# TODO : type de véhicule pour agrégés (time et speed), bouton retour pour input.py et database.py, vider la db, commentaires, documentation
+# TODO : type de véhicule pour agrégés (time et speed), vider la db, commentaires, documentation dev
 
 import tkinter as tk
 
@@ -36,9 +36,16 @@ def send_data(datadict, root):
     db_frame = tk.Frame(database_window)
     db_frame.pack()
     db_label = tk.Label(db_frame, text="Données ajoutées à la base de données !", font='Helvetica 16 bold')
+    back_button = tk.Button(db_frame, text="Retour au menu", cursor="hand2", command=lambda: end_data(db_frame, database_window, root))
     db_label.pack()
+    back_button.pack()
     import database
     database.insert_db(datadict)
+
+def end_data(db_frame, database_window, root):
+    db_frame.pack_forget()
+    root.deiconify()
+    database_window.destroy()
 
 
 # SELECT
@@ -65,9 +72,16 @@ def start_analyze(root):
     analyze_frame = tk.Frame(analyze_window)
     analyze_frame.pack()
     analyze_label = tk.Label(analyze_frame, text="Analyse des données sélectionnées", font='Helvetica 16 bold')
+    back_button = tk.Button(analyze_frame, text="Retour au menu", cursor="hand2", command=lambda: end_analyze(analyze_frame, analyze_window, root))
     analyze_label.pack()
+    back_button.pack()
     import analyze
     analyze.launch()
+
+def end_analyze(analyze_frame, analyze_window, root):
+    analyze_frame.pack_forget()
+    root.deiconify()
+    analyze_window.destroy()
 
 
 # OTHERS
