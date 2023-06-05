@@ -60,23 +60,23 @@ def end_data(db_frame, database_window, root):
     database_window.destroy()
 
 
-# SELECT
+# SELECTION
 
 # Executed when pressing second button on main menu
-def launch_select():
+def launch_selection():
     # hide root window
     root.withdraw()
-    # create new window for select process
-    select_window = tk.Toplevel(root)
-    select_window.title("KallaxComptages - select")
-    # launch select process
-    import select
-    select.begin(select_window, root)
+    # create new window for selection process
+    selection_window = tk.Toplevel(root)
+    selection_window.title("KallaxComptages - selection")
+    # launch selection process
+    import selection
+    selection.begin(selection_window, root)
 
 # Show back main menu (will be dismissed again right after) and proceed with analyze.py
-def receive_select(select_window, root):
+def receive_selection(selection_window, root):
     root.deiconify()
-    select_window.destroy()
+    selection_window.destroy()
     start_analyze(root)
 
 
@@ -171,8 +171,8 @@ def pack_main(root):
     button_input = tk.Button(root, text="Importer un fichier", cursor="hand2", command=launch_input)
     button_input.pack()
 
-    # second button, launches select process
-    button_input = tk.Button(root, text="Sélectionner des données à analyser", cursor="hand2", command=launch_select)
+    # second button, launches selection process
+    button_input = tk.Button(root, text="Sélectionner des données à analyser", cursor="hand2", command=launch_selection)
     button_input.pack()
 
     # third button, creates confirmation window to empty database

@@ -15,7 +15,7 @@ def begin(newWindow, rootDef):
     global window, root
     window = newWindow
     root = rootDef
-    print("Starting select process...")
+    print("Starting selection process...")
 
     # add content to the current window
     mainframe = tk.Frame(window)
@@ -23,14 +23,14 @@ def begin(newWindow, rootDef):
 
     mainlabel = tk.Label(mainframe, text="Sélection de données", font='Helvetica 16 bold')
     templabel = tk.Label(mainframe, text="En cours d'implémentation...", font='Helvetica 12')
-    analyzebutton = tk.Button(mainframe, text="Analyser", command= lambda: end_select(mainframe))
+    analyzebutton = tk.Button(mainframe, text="Analyser", command= lambda: end_selection(mainframe))
 
     mainlabel.pack()
     templabel.pack()
     analyzebutton.pack()
 
-# Function to end the select process
-def end_select(mainframe):
+# Function to end the selection process
+def end_selection(mainframe):
     mainframe.pack_forget()
     print("All necessary information gathered, processing to analyze...")
-    main.receive_select(window, root)
+    main.receive_selection(window, root)

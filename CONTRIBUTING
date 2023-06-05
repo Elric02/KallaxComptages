@@ -16,5 +16,5 @@ Structure of the project:
 - main.py is the central file, generating the main menu and coordinating the other files.
 - input.py is the file handling the data specification feature (user uploads file and tells the program which data to take into account, basically).
 - database.py is the file handling the insertion of the data in the database. The data was specified during the input.py process.
-- select.py is the file handling the selection of data from the database aiming to use it for the analyze.
+- selection.py is the file handling the selection of data from the database aiming to use it for the analyze.
 - analyze.py is the file handling the analyze of the data selected during the select.py process, based on specific requests made by the user.
