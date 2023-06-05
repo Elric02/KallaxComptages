@@ -97,3 +97,6 @@ Une fois l'étape 8 validée, les données sont envoyées dans la base de donné
 À écrire quand le programme le permettra...
 
 ## Contribuer au développement
+Les contributions au projet sont volontiers acceptées, n'ayant pas forcément le temps de mener à bout l'entièreté du développement du programme.
+<br>Si vous souhaitez contribuer, veuillez vous référer à la page "contribuer" du répertoire.
+<br>Je vous recommande également de passer rapidement en revue la partie écrite du travail, en particulier le chapitre 6 qui concerne le développement de KallaxComptages. Vous pouvez trouver le document sous forme de PDF dans le dossier "thesis" du projet.

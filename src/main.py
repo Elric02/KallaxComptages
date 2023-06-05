@@ -1,5 +1,3 @@
-# TODO : commentaires, documentation dev
-
 import tkinter as tk
 import os
 import shutil
@@ -13,7 +11,6 @@ optionmenu_with_other_date = 'Déjà présent dans "Date"'
 optionmenu_with_other_begin = 'Déjà présent dans "Début"'
 optionmenu_with_none = 'Pas de valeur'
 
-# Executed when pressing first button on main menu
 # Executed when pressing first button on main menu
 def launch_input():
     # hide root window
