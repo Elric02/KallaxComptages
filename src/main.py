@@ -1,6 +1,9 @@
-# TODO : type de véhicule pour agrégés (time et speed), vider la db, commentaires, documentation dev
+# TODO : type de véhicule pour agrégés (time et speed), commentaires, documentation dev
 
 import tkinter as tk
+import os
+import shutil
+import sqlite3
 
 
 # INPUT
@@ -87,7 +90,42 @@ def end_analyze(analyze_frame, analyze_window, root):
 # OTHERS
 
 def empty_database():
-    print("TODO")
+    confirm_window = tk.Toplevel(root)
+    confirm_frame = tk.Frame(confirm_window)
+    confirm_frame.pack()
+
+    label1 = tk.Label(confirm_frame, text="Confirmez-vous que vous voulez vider la base de données ? Cette opération est irréversible",
+                      font='Helvetica 14 bold')
+    button_yes = None
+    button_no = None
+    button_yes = tk.Button(confirm_frame, text="Oui, vider", cursor="hand2",
+                           command=lambda: empty_database_confirmed(label1, button_yes, button_no))
+    button_no = tk.Button(confirm_frame, text="Non, annuler", cursor="hand2",
+                          command=lambda: confirm_window.destroy())
+
+    label1.pack()
+    button_yes.pack()
+    button_no.pack()
+
+def empty_database_confirmed(label1, button_yes, button_no):
+    if os.path.exists("db/database_empty.db"):
+        os.remove("db/database.db")
+        shutil.copyfile("db/database_empty.db", "db/database.db")
+        label1.config(text="Base de données vidée avec succès.")
+        button_no.config(text="OK")
+        button_yes.pack_forget()
+        print("Database successfully cleared by replacing working file with empty file")
+    else:
+        con = sqlite3.connect('db/database.db')
+        cur = con.cursor()
+        for table in ["Source", "Entry", "AggregatedSpeed", "AggregatedTime", "Unique"]:
+            cur.execute('DELETE FROM "' + table + '";')
+        con.commit()
+        con.close()
+        label1.config(text="Base de données vidée avec succès.")
+        button_no.config(text="OK")
+        button_yes.pack_forget()
+        print("Database successfully cleared by executing DELETE commands")
 
 
 # MAIN
