@@ -31,7 +31,9 @@ datadict = {}
 
 # BEGIN AND END FUNCTIONS
 
+# First executed function, initiates the whole process (or re-initiate it if it was canceled)
 def begin(newWindow, rootDef):
+    # redefine data specifications in case process was canceled
     global window, root, filetype, xlsx_sheets, working_element, df, data_types, working_rows, date_hour_columns,\
             speed_column, speedspan_column, data_columns, location
     window = newWindow
@@ -48,34 +50,43 @@ def begin(newWindow, rootDef):
     speedspan_column = 0
     data_columns = [[], [], []]
     location = [0, 0]
+    # show first part of the process
     pack_part1()
 
 # Function to end the input process
 def end_input(frame8):
+    # hide content of part 8
     frame8.pack_forget()
     print("All necessary information gathered, processing to database...")
+    # switch back to main process
     main.receive_input(datadict, window, root)
 
 # Function to cancel the input process and start back at the beginning of it
 def cancel_input(current_frame):
+    # hide content of current part
     current_frame.pack_forget()
     print("Cancelling input process and initiating it again.")
+    # start the input process again
     begin(window, root)
 
 # Function to cancel the input process and go to the main menu
 def back_to_menu(current_frame, cancel_window):
+    # hide cancelling window and current shown content
     cancel_window.destroy()
     current_frame.pack_forget()
+    # switch back to main process
     main.abort_input(window, root)
 
 
 # CANCELLING CONFIRMATION FUNCTION
 
 def confirm_cancel(current_frame):
+    # create new window that asks the user for cancelling confirmation
     cancel_window = tk.Toplevel(window)
     cancel_frame = tk.Frame(cancel_window)
     cancel_frame.pack()
 
+    # set content of the window
     label1 = tk.Label(cancel_frame, text="Confirmez-vous que vous voulez annuler l'opération en cours ?", font='Helvetica 14 bold')
     button_yes = tk.Button(cancel_frame, text="Oui, retour au menu", cursor="hand2", command=lambda: back_to_menu(current_frame, cancel_window))
     button_no = tk.Button(cancel_frame, text="Non, continuer l'opération en cours", cursor="hand2", command=lambda: cancel_window.destroy())
@@ -89,55 +100,72 @@ def confirm_cancel(current_frame):
 
 # Function to open file and set file type
 def choose_file(frame1):
+    # prompt user to select file
     global loc
     loc = tk_fd.askopenfilename(filetypes=(("fichier XLSX ou CSV", ["*.xlsx", "*.csv"]),))
+    # define file type based on the file name
     global filetype
     filetype = loc[loc.rindex('.'):]
     print("Importing", filetype, "located at", loc)
+    # for a xlsx file, define sheet names
     if filetype == ".xlsx":
         global file, xlsx_sheets
         file = pd.ExcelFile(loc)
         xlsx_sheets = file.sheet_names
+    # proceed to part 2
     pack_part2(frame1)
 
 
 # Function to set working element (separator or working sheet)
 def set_working_element(frame2, entry2a_var):
     global working_element, file, df
+    # define working sheet if file is xlsx, based on the user input
     if filetype == ".xlsx":
+        # abort function if there is no user input
         if entry2a_var.get() == "" or entry2a_var.get() == "Cliquez ici":
             return
         else:
             working_element = entry2a_var.get()
+        # already get the content based on the sheet name
         df = file.parse(sheet_name=working_element, header=None)
+    # define information separator if file is csv
     elif filetype == ".csv":
         # 4096 is the amount of bytes that are read (in case the CSV file is large)
         data = open(loc, "r").read(4096)
+        # detect automatically separator
         working_element = csv.Sniffer().sniff(data).delimiter
+        # already get the content using the determined separator
         df = pd.read_csv(loc, delimiter=working_element, header=None)
     print("Working element set as", working_element)
+    # proceed to part 3
     pack_part3(frame2)
 
 
 # Function to set data type(s)
 def set_data_types(frame3, radio3var, check3var_1, check3var_2):
     global data_types
+    # data type is unique
     if radio3var.get() == 1:
         data_types[0] = True
     else:
+        # data type is time-aggregated
         if check3var_1.get() == 1:
             data_types[1] = True
+        # data type is speed-aggregated (can be both type of aggregated at the same time)
         if check3var_2.get() == 1:
             data_types[2] = True
+        # data type wasn't defined yet, abort function
         if check3var_1.get() == 0 and check3var_2.get() == 0:
             return
     print("Data types set as... raw:", data_types[0], ", time-aggregated:", data_types[1], ", speed-aggregated:", data_types[2])
+    # proceed to part 4
     pack_part4(frame3)
 
 
 # Function to set which rows we will work with
 def set_working_rows(frame4, entry4a_1, entry4a_2, entry4b_1, entry4b_2, entry4c_1, entry4c_2):
     global working_rows
+    # set working rows based on the user input and the saved data type
     if data_types[0]:
         working_rows[0] = [entry4a_1.get(), entry4a_2.get()]
         print("Working rows set for raw data as :", *working_rows[0])
@@ -148,31 +176,14 @@ def set_working_rows(frame4, entry4a_1, entry4a_2, entry4b_1, entry4b_2, entry4c
         working_rows[2] = [entry4c_1.get(), entry4c_2.get()]
         print("Working rows set for speed-aggregated data as :", *working_rows[2])
     print("Proceeding to part 5")
+    # proceed to part 5
     pack_part5(frame4)
-
-
-# Function that returns a list containing letters of the alphabet, or numbers with first value of the column (depending on the file type)
-def generateColumnsMenu(data_type):
-    columns = []
-    for i in range(df.shape[1]):
-        str_max_length = 10
-        col_identifier = ""
-        if filetype == ".xlsx":
-            col_identifier = openpyxl.utils.get_column_letter(i+1)
-        elif filetype == ".csv":
-            col_identifier = str(i+1)
-        first_value = str(df.iloc[int(working_rows[data_type][0])-1, i])
-        first_value = "~vide~" if first_value == "nan" else first_value
-        if len(first_value) > str_max_length:
-            columns.append(col_identifier + " (1ère val : " + first_value[:str_max_length] + ".)")
-        else:
-            columns.append(col_identifier + " (1ère val : " + first_value[:str_max_length] + ")")
-    return columns
 
 
 # Function to set date/hour and/or speed columns
 def set_label_columns(frame5, entry5a_1_var, entry5a_2_var, entry5b_1, entry5b_2):
     global date_hour_columns, speed_column, speedspan_column
+    # get user input and define important columns based on defined data type(s)
     if data_types[1]:
         date_hour_columns = [entry5a_1_var.get(), entry5a_2_var.get()]
         print("Date and hour columns set to :", *date_hour_columns)
@@ -181,6 +192,7 @@ def set_label_columns(frame5, entry5a_1_var, entry5a_2_var, entry5b_1, entry5b_2
         speedspan_column = entry5b_2.get()
         print("Speed column set to:", speed_column, "and", speedspan_column)
     print("Proceeding to part 6")
+    # proceed to part 6
     pack_part6(frame5)
 
 
@@ -189,6 +201,7 @@ def set_data_columns(frame6, entry6_1_var, entry6_2_var, entry6_3_var, entry6_4_
                      entry6a_2_var, entry6a_3_var, entry6a_4_var, entry6a_5_var, entry6a_6_var, entry6a_7_var,
                      entry6b_1_var, entry6b_2):
     global data_columns
+    # get user input and define data columns based on defined data type(s)
     if data_types[0]:
         data_columns[0] = [entry6_1_var.get(), entry6_2_var.get(), entry6_3_var.get(), entry6_4_var.get(), entry6_5_var.get()]
     else:
@@ -197,6 +210,7 @@ def set_data_columns(frame6, entry6_1_var, entry6_2_var, entry6_3_var, entry6_4_
         if data_types[2]:
             data_columns[2] = [entry6b_1_var.get(), entry6b_2.get_date()]
     print("Data received, proceeding to part 7")
+    # proceed to part 7
     pack_part7(frame6)
 
 
@@ -206,11 +220,13 @@ def set_location(coords):
     location = coords
     print("Location set to :", location)
 
-# Function to gather all collected informaiton in a dictionary
+# Function to gather all collected information in a dictionary
 def create_dict(frame7):
+    # set file name (without total path)
     filename = loc.split("/")[-1]
     print("Creating data dictionary for file", filename)
     global datadict
+    # create dictionary and set its elements based on data gathered along the input process
     datadict = {
         "working_element": working_element,
         "df": df,
@@ -224,7 +240,34 @@ def create_dict(frame7):
         "filename": filename,
         "filetype": filetype
     }
+    # proceed to part 8
     pack_part8(frame7)
+
+# Function that returns a list containing letters of the alphabet, or numbers with first value of the column (depending on the file type)
+def generateColumnsMenu(data_type):
+    columns = []
+    # for each column in the dataframe
+    for i in range(df.shape[1]):
+        # parameter used to cap the length of the string
+        str_max_length = 10
+        # specify column identifier ("A", "B", "C" etc)
+        col_identifier = ""
+        if filetype == ".xlsx":
+            col_identifier = openpyxl.utils.get_column_letter(i+1)
+        elif filetype == ".csv":
+            col_identifier = str(i+1)
+        # use column identifier to find the first value of the column
+        first_value = str(df.iloc[int(working_rows[data_type][0])-1, i])
+        # placeholder value if first cell of the column has no value
+        first_value = "~vide~" if first_value == "nan" else first_value
+        # truncate end of string if it is longer than the defined max length (only for an esthetics purpose)
+        if len(first_value) > str_max_length:
+            # generate complete text representing the column (identifier + 1st value) and add to list
+            columns.append(col_identifier + " (1ère val : " + first_value[:str_max_length] + ".)")
+        else:
+            columns.append(col_identifier + " (1ère val : " + first_value[:str_max_length] + ")")
+    # return the list with all the texts generated (1 per column)
+    return columns
 
 
 # PACKING FUNCTIONS
@@ -253,6 +296,7 @@ def pack_part2(frame1):
 
     label2a = tk.Label(frame2, text="2. Définissez la feuille à utiliser",
                        font='Helvetica 16 bold')
+    # option menu: value is set by default to a placeholder text, options are generated based on the names of the available sheets
     entry2a_var = tk.StringVar()
     entry2a_var.set("Cliquez ici")
     entry2a = tk.OptionMenu(frame2, entry2a_var, *xlsx_sheets)
@@ -262,9 +306,11 @@ def pack_part2(frame1):
     cancel_label.bind("<Button-1>", lambda e: confirm_cancel(frame2))
 
     frame1.pack_forget()
+    # only show those elements if file type is xlsx
     if filetype == ".xlsx":
         label2a.pack()
         entry2a.pack()
+    # else if file type is csv, proceed directly without user input (data separator is defined automatically)
     elif filetype == ".csv":
         set_working_element(frame2, entry2a_var)
         return
@@ -278,11 +324,14 @@ def pack_part3(frame2):
     frame3 = tk.Frame(window)
     frame3.pack()
 
+    # hide aggregated data checkboxes (used when "unique data" is selected)
     def unpack_checkbox3():
         check3_1.pack_forget()
         check3_2.pack_forget()
 
+    # show aggregated data checkboxes (used when "aggregated data" is selected)
     def pack_checkbox3():
+        # button and label are hidden and shown again so that they appear at the bottom of the window
         button3.pack_forget()
         cancel_label.pack_forget()
         check3_1.pack()
@@ -291,6 +340,7 @@ def pack_part3(frame2):
         cancel_label.pack(side=tk.LEFT)
 
     label3 = tk.Label(frame3, text="3. Définissez le type de données disponibles", font='Helvetica 16 bold')
+    # IntVar's are set to 1 if the option is selected, 0 otherwise
     radio3var = tk.IntVar()
     radio3_1 = tk.Radiobutton(frame3, text="données brutes", cursor="hand2", variable=radio3var, value=1, command=unpack_checkbox3)
     radio3_2 = tk.Radiobutton(frame3, text="données agrégées", cursor="hand2", variable=radio3var, value=2, command=pack_checkbox3)
@@ -321,10 +371,12 @@ def pack_part4(frame3):
     frame4a_1 = tk.Frame(frame4)
     label4a_1 = tk.Label(frame4a_1, text="Début (inclus) : ", font='Helvetica 10')
     entry4a_1 = tk.Entry(frame4a_1, bd=3)
+    # placeholder value (always start at line number 1 by default)
     entry4a_1.insert(0, "1")
     frame4a_2 = tk.Frame(frame4)
     label4a_2 = tk.Label(frame4a_2, text="Fin (inclus) : ", font='Helvetica 10')
     entry4a_2 = tk.Entry(frame4a_2, bd=3)
+    # placeholder value (takes into account the amount of lines in the dataframe by default)
     entry4a_2.insert(0, str(df.shape[0]))
 
     label4b = tk.Label(frame4, text="4b. Donnez les numéros des lignes utilisées pour les données agrégées par tranches de temps",
@@ -355,6 +407,7 @@ def pack_part4(frame3):
     cancel_label.bind("<Button-1>", lambda e: confirm_cancel(frame4))
 
     frame3.pack_forget()
+    # shown elements depend on the defined data type(s), not everything will be packed
     if data_types[0]:
         label4a.pack()
         frame4a_1.pack()
@@ -389,10 +442,13 @@ def pack_part5(frame4):
     frame5 = tk.Frame(window)
     frame5.pack()
 
+    # define input variables so that they can safely be used during the packing
     entry5a_1_var = entry5a_2_var = entry5b_1_var = entry5b_2_var = None
 
     if data_types[1]:
+        # generate list used in the option menu with the different columns and their first value
         columns = generateColumnsMenu(1)
+        # add a placeholder value for a specific case
         columns_with_date = [main.optionmenu_with_other_date] + columns
 
         label5a = tk.Label(frame5, text="5a. Donnez les colonnes contenant les valeurs de date et d'heure",
@@ -405,6 +461,7 @@ def pack_part5(frame4):
         frame5a_2 = tk.Frame(frame5)
         label5a_2 = tk.Label(frame5a_2, text="Colonne d'heures : ", font='Helvetica 10')
         entry5a_2_var = tk.StringVar()
+        # specific case is used here
         entry5a_2_var.set(columns_with_date[0])
         entry5a_2 = tk.OptionMenu(frame5a_2, entry5a_2_var, *columns_with_date)
 
@@ -432,8 +489,10 @@ def pack_part5(frame4):
 
     frame4.pack_forget()
     if data_types[0]:
+        # no input is asked if data type is unique, set default information and skip to next step
         set_label_columns(frame5, entry5a_1_var, entry5a_2_var, entry5b_1_var, entry5b_2_var)
         return
+    # else show inputs based on which aggregated data type(s) is/are defined
     if data_types[1]:
         label5a.pack()
         frame5a_1.pack()
@@ -461,11 +520,14 @@ def pack_part6(frame5):
     frame6 = tk.Frame(window)
     frame6.pack()
 
+    # define input variables so that they can safely be used during the packing
     entry6_1_var = entry6_2_var = entry6_3_var = entry6_4_var = entry6_5_var = entry6a_1_var = entry6a_2_var =\
     entry6a_3_var = entry6a_4_var = entry6a_5_var = entry6a_6_var = entry6a_7_var = entry6b_1_var = entry6b_2 = None
 
     if data_types[0]:
+        # generate list used in the option menu with the different columns and their first value
         columns = generateColumnsMenu(0)
+        # add placeholder values for some specific cases
         columns_with_other = [main.optionmenu_with_other_date] + columns
         columns_with_none = [main.optionmenu_with_none] + columns
 
@@ -565,6 +627,7 @@ def pack_part6(frame5):
     cancel_label.bind("<Button-1>", lambda e: confirm_cancel(frame6))
 
     frame5.pack_forget()
+    # shown inputs depend on the defined data types, as always
     if data_types[0]:
         for packing in [label6, frame6_1, label6_1, entry6_1, frame6_2, label6_2, entry6_2,
                         frame6_3, label6_3, entry6_3, frame6_4, label6_4, entry6_4, frame6_5, label6_5, entry6_5]:
@@ -603,9 +666,12 @@ def pack_part7(frame6):
     frame7 = tk.Frame(window)
     frame7.pack()
 
+    # local function executed every time user clicks on the map
     def set_marker(coords):
+        # delete current pin and add a new one at the location of the click
         map7.delete_all_marker()
         map7.set_marker(coords[0], coords[1], text="Localisation du comptage")
+        # save marked location
         set_location(coords)
 
     label7 = tk.Label(frame7, text="7. Cliquez sur la localisation exacte du comptage", font='Helvetica 16 bold')
@@ -632,9 +698,11 @@ def pack_part8(frame7):
     frame8.pack()
 
     label8 = tk.Label(frame8, text="Les informations suivantes vont être insérées dans la base de données.", font='Helvetica 16 bold')
+    # list which will contain every information to show in the recap
     labels8 = []
     temp_text = "Nom du fichier utilisé : " + datadict["filename"]
     labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+    # data type
     temp_text = "Type des données : "
     if datadict["working_rows"][0]:
         temp_text += "brutes"
@@ -645,6 +713,7 @@ def pack_part8(frame7):
     elif datadict["working_rows"][2]:
         temp_text += "agrégées par vitesse"
     labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+    # date/hour column and/or speed/speedspan column (aggregated data only)
     if datadict["data_types"][1]:
         temp_text = "Colonne de la date : " + datadict["date_hour_columns"][0]
         labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
@@ -655,6 +724,7 @@ def pack_part8(frame7):
         labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
         temp_text = "Colonne de la valeur de la tranche de vitesse (fin) : " + str(datadict["speedspan_column"])
         labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+    # actual data columns
     if datadict["data_types"][0]:
         temp_text = "Colonne de la date : " + str(datadict["data_columns"][0][0])
         labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
@@ -687,6 +757,7 @@ def pack_part8(frame7):
         original_date = datadict["data_columns"][2][1]
         temp_text = "Jour du comptage : " + str(original_date.split("/")[1] + "." + original_date.split("/")[0] + "." + original_date.split("/")[2])
         labels8.append(tk.Label(frame8, text=temp_text, font="Helvetica 12"))
+    # number of working rows
     temp_text = "Numéros des lignes utilisées : "
     if datadict["data_types"][0]:
         temp_text += str(datadict["working_rows"][0][0]) + " à " + str(datadict["working_rows"][0][1])

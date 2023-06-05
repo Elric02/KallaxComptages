@@ -9,12 +9,15 @@ root = None
 
 # BEGIN AND END FUNCTION
 
+# First executed function, initiates the whole process
 def begin(newWindow, rootDef):
+    # redefine current window and root window with the correct ones
     global window, root
     window = newWindow
     root = rootDef
     print("Starting select process...")
 
+    # add content to the current window
     mainframe = tk.Frame(window)
     mainframe.pack()
 
