@@ -1,0 +1,20 @@
+The project is quite easy to setup.
+Simply clone the src folder to your local Python environment, install the libraries, and you should be good to go.
+The code should be pretty well commented but feel free to open an issue if you have some trouble understanding something (you'd need a basic level in Python though).
+Libraries to install:
+- numpy
+- openpyxl
+- pandas
+- tkinter
+- tkcalendar
+- tkintermapview
+- datefinder
+
+Compiling the code can be done using PyInstaller. Simply execute `pyinstaller main.py` at the root of the "src" folder.
+
+Structure of the project:
+- main.py is the central file, generating the main menu and coordinating the other files.
+- input.py is the file handling the data specification feature (user uploads file and tells the program which data to take into account, basically).
+- database.py is the file handling the insertion of the data in the database. The data was specified during the input.py process.
+- select.py is the file handling the selection of data from the database aiming to use it for the analyze.
+- analyze.py is the file handling the analyze of the data selected during the select.py process, based on specific requests made by the user.
