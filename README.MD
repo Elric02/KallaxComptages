@@ -1,3 +1,4 @@
+*Note to non-french speaking people: this project has been developed in french, but could easily be translated if necessary. Feel free to open an issue or contribute yourself if you are interested.*
 # KallaxComptages
 
 KallaxComptages est un programme développé dans le cadre de mon travail de Bachelor à l'Université de Fribourg, 2022-2023.
