@@ -1,4 +1,4 @@
-*Note to non-french speaking people: this project has been developed in french, but could easily be translated if necessary. Feel free to open an issue or contribute yourself if you are interested.*
+*Note to non-french speaking people: this project has been developed in French, but could easily be translated if necessary. Feel free to open an issue or contribute yourself if you are interested.*
 # KallaxComptages
 
 KallaxComptages est un programme développé dans le cadre de mon travail de Bachelor à l'Université de Fribourg, 2022-2023.
@@ -10,9 +10,13 @@ Son concept est le suivant :
 - L'utilisateur.trice a ensuite à sa disposition des possibilités pour trouver facilement les informations voulues (sous forme de graphiques, de cartes, de chiffres bruts...).
 - L'application peut aussi offrir des fonctionnalités plus avancées, telles que du data cleaning ou de la détection d'erreurs.
 
+## Exigences
+KallaxComptages tourne uniquement sur Windows 8 et plus récent.
+<br>MacOS et Linux ne sont malheureusement pas pris en charge pour le moment, mais il vous est possible de compiler le programme (via PyInstaller, voir section "Contribuer") sur ces systèmes d'exploitation.
+
 ## Spécifications techniques
 
-- **Python** - Langage dans lequel est entièrement écrit l'application. Librairies utilisées :
+- **Python** - Langage dans lequel est entièrement écrite l'application. Librairies utilisées :
     - **tkinter**, **tkintermapview**, **tkcalendar** - Interface de l'application
     - **numpy**, **pandas** - Traitement numérique de l'information
     - **openpyxl** - Support de l'input de fichiers Excel
@@ -32,7 +36,7 @@ Son concept est le suivant :
 
 ## Installation et utilisation
 
-KallaxComptages ne nécessite pas vraiment d'installation. Il suffit de copier le dossier "out" sur votre machine, puis de lancer l'exécutable (.exe).
+KallaxComptages ne nécessite pas vraiment d'installation. Il suffit de copier le dossier "out" sur votre machine, puis de lancer l'exécutable (main.exe).
 
 Une fois l'exécutable lancé, la fenêtre suivante apparait :<br>
 ![main menu](thesis/img/mainmenu.PNG)
@@ -99,5 +103,5 @@ Une fois l'étape 8 validée, les données sont envoyées dans la base de donné
 
 ## Contribuer au développement
 Les contributions au projet sont volontiers acceptées, n'ayant pas forcément le temps de mener à bout l'entièreté du développement du programme.
-<br>Si vous souhaitez contribuer, veuillez vous référer à la page "contribuer" du répertoire.
+<br>Si vous souhaitez contribuer, veuillez vous référer au fichier "CONTRIBUTING" disponible à la source du répertoire.
 <br>Je vous recommande également de passer rapidement en revue la partie écrite du travail, en particulier le chapitre 6 qui concerne le développement de KallaxComptages. Vous pouvez trouver le document sous forme de PDF dans le dossier "thesis" du projet.

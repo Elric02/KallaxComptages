@@ -10,7 +10,9 @@ Libraries to install:
 - tkintermapview
 - datefinder
 
-Compiling the code can be done using PyInstaller. Simply execute `pyinstaller main.py` at the root of the "src" folder.
+Compiling the code can be done using PyInstaller. Simply execute `pyinstaller --onefile main.py` at the root of the "src" folder.
+Do not forget to add the "db" folder (with its content at the same location of your main.exe output! Otherwise the program will not be able to find the database. Please see the "out" folder of the project for an example.
+Note: I had to execute `pip install pyinstaller tkcalendar` and `pip install pyinstaller datefinder` in my terminal for the libraries to be usable, including them in the main.spec hiddenimports wasn't enough for some reason.
 
 Structure of the project:
 - main.py is the central file, generating the main menu and coordinating the other files.
